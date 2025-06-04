@@ -26,6 +26,7 @@
       .then(response => response.text())
       .then(csvText => {
         const data = Papa.parse(csvText, { header: true }).data;
+        console.log(data);
 
         L.geoJson(statesData, {
           onEachFeature: function (feature, layer) {
