@@ -1,63 +1,46 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+  <title>US State Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>#map { height: 100vh; }</style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;US State Map&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="utf-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;#map { height: 100vh; }&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="map"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- JS Dependencies --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://unpkg.com/leaflet/dist/leaflet.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="us-states.js"&gt;&lt;/script&gt;<span class="Apple-converted-space"> </span></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const map = L.map('map').setView([37.8, -96], 4);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>attribution: 'Map data © OpenStreetMap contributors'</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}).addTo(map);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>fetch(sheetURL)</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.then(response =&gt; response.text())</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.then(csvText =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const data = Papa.parse(csvText, { header: true }).data;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>L.geoJson(statesData, {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>onEachFeature: function (feature, layer) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const state = feature.properties.name;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const match = data.find(d =&gt; d.State === state);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (match) {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>const popup = `</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;b&gt;${state}&lt;/b&gt;&lt;br&gt;Value: ${match.Value}&lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;iframe src="${match.PDF_URL}" width="250" height="300" style="border:none;"&gt;&lt;/iframe&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;br&gt;&lt;a href="${match.PDF_URL}" target="_blank"&gt;Open full PDF&lt;/a&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>layer.bindPopup(popup);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}).addTo(map);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script src="us-states.js"></script>
+
+  <script>
+    const map = L.map('map').setView([37.8, -96], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(map);
+
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
+
+    fetch(sheetURL)
+      .then(response => response.text())
+      .then(csvText => {
+        const data = Papa.parse(csvText, { header: true }).data;
+
+        L.geoJson(statesData, {
+          onEachFeature: function (feature, layer) {
+            const state = feature.properties.name;
+            const match = data.find(d => d.State === state);
+            if (match) {
+              const popup = `
+                <b>${state}</b><br>Value: ${match.Value}<br>
+                <iframe src="${match.PDF_URL}" width="250" height="300" style="border:none;"></iframe>
+                <br><a href="${match.PDF_URL}" target="_blank">Open full PDF</a>`;
+              layer.bindPopup(popup);
+            }
+          }
+        }).addTo(map);
+      });
+  </script>
 </body>
 </html>
