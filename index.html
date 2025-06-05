@@ -123,7 +123,6 @@
       }
 
       if (variable === 'Helmet_Grouped') {
-        if (value === 'All_Riders') return '#d53e4f';
         if (value === 'Under_18') return '#3288bd';
         if (value === 'Under_16') return '#66c2a5';
         if (value === 'No') return '#fdae61';
@@ -153,9 +152,8 @@
         }
 
         if (variable === 'Helmet_Grouped') {
-          const categories = ['All_Riders', 'Under_18', 'Under_16', 'No', 'NA'];
+          const categories = ['Under_18', 'Under_16', 'No', 'NA'];
           const labelsMap = {
-            'All_Riders': 'All riders',
             'Under_18': 'Under 18 only',
             'Under_16': 'Under 16 only',
             'No': 'No requirement',
