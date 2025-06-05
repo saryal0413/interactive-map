@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>US State Map</title>
+  <title>US State Map - E-Bike Policy</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
   <style>
     #map { height: 95vh; }
     #variable-select {
@@ -19,20 +21,32 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       border: 1px solid #ccc;
     }
-
+    .info.legend {
+      background: white;
+      padding: 6px 10px;
+      font: 14px/16px Arial, sans-serif;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+      line-height: 1.2;
+    }
+    .info.legend i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Dropdown Selector -->
   <select id="variable-select">
     <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
-    <!-- Add more options here if needed -->
+    <option value="Helmet_Grouped">Helmet Requirement</option>
   </select>
 
   <div id="map"></div>
 
-  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="us-states.js"></script>
@@ -40,6 +54,7 @@
   <script>
     const map = L.map('map').setView([37.8, -96], 4);
     map.zoomControl.setPosition('bottomleft');
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data © OpenStreetMap contributors'
     }).addTo(map);
@@ -47,68 +62,112 @@
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
     let dataLookup = {};
     let geojsonLayer;
+    let currentLegend;
 
     fetch(sheetURL)
       .then(response => response.text())
       .then(csvText => {
         const data = Papa.parse(csvText, { header: true }).data;
-
-        // Build a lookup table keyed by state name
         data.forEach(row => {
           dataLookup[row.State] = row;
         });
 
-        // Add GeoJSON layer with style
         geojsonLayer = L.geoJson(statesData, {
-          style: function (feature) {
-            const state = feature.properties.name;
-            const value = dataLookup[state]?.Age_Class3;
-            return {
-              fillColor: getColor(value),
-              weight: 1,
-              color: 'white',
-              fillOpacity: 0.7
-            };
-          },
-          onEachFeature: function (feature, layer) {
+          style: feature => getStyle(feature, 'Age_Class3'),
+          onEachFeature: (feature, layer) => {
             const state = feature.properties.name;
             const row = dataLookup[state];
             if (row) {
               const popup = `
                 <b>${state}</b><br>
                 Age Requirement (Class 3): ${row.Age_Class3 || 'N/A'}<br>
+                Helmet Law: ${row["Helmet_requirement_(Text)"] || 'N/A'}<br>
                 <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
                 <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
               layer.bindPopup(popup);
             }
           }
         }).addTo(map);
+
+        // Initial legend
+        updateLegend('Age_Class3');
       });
 
-    // Dropdown logic
     document.getElementById('variable-select').addEventListener('change', function () {
       const variable = this.value;
-      geojsonLayer.setStyle(function (feature) {
-        const state = feature.properties.name;
-        const value = dataLookup[state]?.[variable];
-        return {
-          fillColor: getColor(value, variable),
-          weight: 1,
-          color: 'white',
-          fillOpacity: 0.7
-        };
-      });
+      geojsonLayer.setStyle(feature => getStyle(feature, variable));
+      updateLegend(variable);
     });
 
-    // Color logic
-    function getColor(value, variable = 'Age_Class3') {
-      if (!value || value === "NA") return "#d3d3d3";
-      if (value === "None") return "#ffffb2";
-      const num = parseInt(value);
-      if (!isNaN(num)) {
-        return num >= 16 ? "#1a9641" : "#fdae61";
+    function getStyle(feature, variable) {
+      const state = feature.properties.name;
+      const value = dataLookup[state]?.[variable];
+      return {
+        fillColor: getColor(value, variable),
+        weight: 1,
+        color: 'white',
+        fillOpacity: 0.7
+      };
+    }
+
+    function getColor(value, variable) {
+      if (!value || value === 'NA') return '#d3d3d3';
+
+      if (variable === 'Age_Class3') {
+        if (value === "None") return "#ffffb2";
+        const num = parseInt(value);
+        if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
       }
-      return "#ccc";
+
+      if (variable === 'Helmet_Grouped') {
+        if (value === 'All_Riders') return '#d53e4f';
+        if (value === 'Under_18') return '#3288bd';
+        if (value === 'Under_16') return '#66c2a5';
+        if (value === 'No') return '#fdae61';
+        if (value === 'NA') return '#d3d3d3';
+      }
+
+      return '#ccc';
+    }
+
+    function updateLegend(variable) {
+      if (currentLegend) map.removeControl(currentLegend);
+
+      currentLegend = L.control({ position: 'bottomright' });
+
+      currentLegend.onAdd = function (map) {
+        const div = L.DomUtil.create('div', 'info legend');
+        let labels = [];
+
+        if (variable === 'Age_Class3') {
+          const values = ['None', 14, 15, 16, 'NA'];
+          labels = values.map(v => {
+            const label = v === 'None' ? 'No Restriction'
+                        : v === 'NA' ? 'Not Available'
+                        : `${v}+`;
+            return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
+          });
+        }
+
+        if (variable === 'Helmet_Grouped') {
+          const categories = ['All_Riders', 'Under_18', 'Under_16', 'No', 'NA'];
+          const labelsMap = {
+            'All_Riders': 'All riders',
+            'Under_18': 'Under 18 only',
+            'Under_16': 'Under 16 only',
+            'No': 'No requirement',
+            'NA': 'Not available'
+          };
+          labels = categories.map(cat =>
+            `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+          );
+        }
+
+        div.innerHTML = labels.join('<br>');
+        return div;
+      };
+
+      currentLegend.addTo(map);
     }
   </script>
 
