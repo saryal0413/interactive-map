@@ -39,6 +39,7 @@
 
   <script>
     const map = L.map('map').setView([37.8, -96], 4);
+    map.zoomControl.setPosition('bottomleft');
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data © OpenStreetMap contributors'
     }).addTo(map);
