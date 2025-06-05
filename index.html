@@ -5,11 +5,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>#map { height: 100vh; }</style>
+  <style>
+    #map { height: 95vh; }
+    #variable-select {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      padding: 5px;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Dropdown Selector -->
+  <select id="variable-select">
+    <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
+    <!-- Add more options here if needed -->
+  </select>
+
   <div id="map"></div>
 
+  <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
   <script src="us-states.js"></script>
@@ -21,27 +38,72 @@
     }).addTo(map);
 
     const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
+    let dataLookup = {};
+    let geojsonLayer;
 
     fetch(sheetURL)
       .then(response => response.text())
       .then(csvText => {
         const data = Papa.parse(csvText, { header: true }).data;
-        console.log(data);
 
-        L.geoJson(statesData, {
+        // Build a lookup table keyed by state name
+        data.forEach(row => {
+          dataLookup[row.State] = row;
+        });
+
+        // Add GeoJSON layer with style
+        geojsonLayer = L.geoJson(statesData, {
+          style: function (feature) {
+            const state = feature.properties.name;
+            const value = dataLookup[state]?.Age_Class3;
+            return {
+              fillColor: getColor(value),
+              weight: 1,
+              color: 'white',
+              fillOpacity: 0.7
+            };
+          },
           onEachFeature: function (feature, layer) {
             const state = feature.properties.name;
-            const match = data.find(d => d.State === state);
-            if (match) {
+            const row = dataLookup[state];
+            if (row) {
               const popup = `
-                <b>${state}</b><br>Value: ${match.Value}<br>
-                <iframe src="${match.PDF_URL}" width="250" height="300" style="border:none;"></iframe>
-                <br><a href="${match.PDF_URL}" target="_blank">Open full PDF</a>`;
+                <b>${state}</b><br>
+                Age Requirement (Class 3): ${row.Age_Class3 || 'N/A'}<br>
+                <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
+                <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
               layer.bindPopup(popup);
             }
           }
         }).addTo(map);
       });
+
+    // Dropdown logic
+    document.getElementById('variable-select').addEventListener('change', function () {
+      const variable = this.value;
+      geojsonLayer.setStyle(function (feature) {
+        const state = feature.properties.name;
+        const value = dataLookup[state]?.[variable];
+        return {
+          fillColor: getColor(value, variable),
+          weight: 1,
+          color: 'white',
+          fillOpacity: 0.7
+        };
+      });
+    });
+
+    // Color logic
+    function getColor(value, variable = 'Age_Class3') {
+      if (!value || value === "NA") return "#d3d3d3";
+      if (value === "None") return "#ffffb2";
+      const num = parseInt(value);
+      if (!isNaN(num)) {
+        return num >= 16 ? "#1a9641" : "#fdae61";
+      }
+      return "#ccc";
+    }
   </script>
+
 </body>
 </html>
