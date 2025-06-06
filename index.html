@@ -18,7 +18,7 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      width: 95%; /* small side margin */
+      width: 95%;
       max-width: none;
       margin: 0 auto;
       padding: 10px;
@@ -34,7 +34,8 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       border-radius: 8px;
       line-height: 1.2;
-      max-width: 250px;
+      width: auto;
+      max-width: 90vw;
     }
 
     .info.legend i {
@@ -97,13 +98,14 @@
         border: 1px solid #ccc;
         margin: 10px;
       ">
-        <option value="Age_Class3">Age Requirement for Class 3 E-bikes </option>
+        <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
         <option value="Helmet_Grouped">Helmet Requirement</option>
+        <option value="Sidewalk_Riding">Sidewalk Riding Restrictions</option>
       </select>
 
       <!-- Right logo -->
-      <img src="logo-UTK.png" alt="University Logo" style="
-        height: 90px;
+      <img src="logo-university.png" alt="University Logo" style="
+        height: 80px;
         width: 200px;
         object-fit: contain;
         padding: 5px;
@@ -121,7 +123,7 @@
       font-size: 14px;
       color: #555;
     ">
-      Created by Sameer Aryal at University of Tennessee, Knoxville
+      Created by Sameer Aryal
     </div>
 
   </div>
@@ -162,6 +164,7 @@
                 <b>${state}</b><br>
                 Age Requirement (Class 3): ${row.Age_Class3 || 'N/A'}<br>
                 Helmet Law: ${row["Helmet_requirement_(Text)"] || 'N/A'}<br>
+                Sidewalk Restrictions: ${row.Sidewalk_Restrictions_Text || 'N/A'}<br>
                 <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
                 <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
               layer.bindPopup(popup);
@@ -206,6 +209,15 @@
         if (value === 'NA') return '#d3d3d3';
       }
 
+      if (variable === 'Sidewalk_Riding') {
+        if (value === 'Can ride') return '#1a9641'; // Green
+        if (value === 'Cannot ride') return '#d7191c'; // Red
+        if (value.startsWith('Can ride') && value !== 'Can ride') return '#fdae61'; // Orange Partial
+        if (value.startsWith('Cannot ride a Class')) return '#984ea3'; // Purple
+        if (value === 'Cannot ride but can stand and park.') return '#377eb8'; // Blue
+        return '#d3d3d3'; // Gray for unknown
+      }
+
       return '#ccc';
     }
 
@@ -238,6 +250,37 @@
           };
           labels = categories.map(cat =>
             `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+          );
+        }
+
+        if (variable === 'Sidewalk_Riding') {
+          const categories = [
+            'Can ride',
+            'Partial allowed',
+            'Cannot ride certain classes',
+            'Cannot ride',
+            'Cannot ride but can stand and park'
+          ];
+
+          const labelsMap = {
+            'Can ride': 'Allowed on sidewalks',
+            'Partial allowed': 'Allowed with restrictions (minors, business district, age)',
+            'Cannot ride certain classes': 'Certain e-bike classes prohibited',
+            'Cannot ride': 'Prohibited for all e-bikes',
+            'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
+          };
+
+          function getColorForLegend(category) {
+            if (category === 'Can ride') return '#1a9641';
+            if (category === 'Partial allowed') return '#fdae61';
+            if (category === 'Cannot ride certain classes') return '#984ea3';
+            if (category === 'Cannot ride') return '#d7191c';
+            if (category === 'Cannot ride but can stand and park') return '#377eb8';
+            return '#d3d3d3';
+          }
+
+          labels = categories.map(cat =>
+            `<i style="background:${getColorForLegend(cat)}"></i> ${labelsMap[cat]}`
           );
         }
 
