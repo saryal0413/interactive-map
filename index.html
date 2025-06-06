@@ -42,6 +42,50 @@
   </style>
 </head>
 <body>
+  <!-- Wrapper with frame style -->
+  <div id="map-wrapper" style="
+    border: 5px solid #ccc; 
+    padding: 10px; 
+    max-width: 1200px; 
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    background-color: white;
+    position: relative;
+  ">
+
+    <!-- Logos row -->
+    <div id="logos" style="
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 10px 20px;
+    ">
+      <!-- Left Logo (Funder) -->
+      <img src="FunderLogoURL.png" alt="Funder Logo" style="height: 50px;">
+
+      <!-- Right Logo (University) -->
+      <img src="UniversityLogoURL.png" alt="University Logo" style="height: 50px;">
+    </div>
+
+    <!-- Dropdown and Map -->
+    <select id="variable-select">
+      <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
+      <option value="Helmet_Grouped">Helmet Requirement</option>
+    </select>
+
+    <div id="map"></div>
+
+    <!-- Footer text -->
+    <div id="footer" style="
+      text-align: center; 
+      padding: 10px; 
+      font-size: 14px; 
+      color: #555;
+    ">
+      Created by Sameer Aryal
+    </div>
+  </div>
+
 
   <select id="variable-select">
     <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
