@@ -61,31 +61,40 @@
     </div>
 
     <!-- Logos and dropdown -->
-    <div id="logos" style="
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 10px 20px;
-    ">
-      <!-- Left logo -->
-      <img src="logo-funder.jpg" alt="Funder Logo" style="height: 50px;">
+  <div id="logos" style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* this ensures vertical centering! */
+    flex-wrap: wrap;
+    padding: 10px 20px;
+  ">
 
-      <!-- Dropdown in middle -->
-      <select id="variable-select" style="
-        padding: 8px;
-        font-size: 16px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        margin: 10px;
-      ">
-        <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
-        <option value="Helmet_Grouped">Helmet Requirement</option>
-      </select>
+  <!-- Left logo -->
+  <img src="logo-funder.jpg" alt="Funder Logo" style="
+    height: 80px;
+    max-width: 200px;
+    object-fit: contain;
+  ">
 
-      <!-- Right logo -->
-      <img src="logo-university.png" alt="University Logo" style="height: 50px;">
-    </div>
+  <!-- Dropdown in middle -->
+  <select id="variable-select" style="
+    padding: 10px 15px;
+    font-size: 18px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin: 10px;
+  ">
+    <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
+    <option value="Helmet_Grouped">Helmet Requirement</option>
+  </select>
+
+  <!-- Right logo -->
+  <img src="logo-university.png" alt="University Logo" style="
+    height: 80px;
+    max-width: 200px;
+    object-fit: contain;
+  ">
+</div>
 
     <!-- Map -->
     <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
