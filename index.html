@@ -68,12 +68,12 @@
       text-align: center;
       font-size: 35px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     ">
-      Micromobility Regulations in the United States
+      Micromobility Regulations in United States
     </div>
 
-    <!-- Logos and dropdown -->
+    <!-- Logos and dropdowns -->
     <div id="logos" style="
       display: flex;
       justify-content: space-between;
@@ -90,22 +90,36 @@
         box-sizing: border-box;
       ">
 
-      <!-- Dropdown in middle -->
-      <select id="variable-select" style="
-        padding: 10px 15px;
-        font-size: 18px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        margin: 10px;
-      ">
-        <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
-        <option value="Helmet_Grouped">Helmet Requirement</option>
-        <option value="Sidewalk_Riding">Sidewalk Riding Restrictions</option>
-      </select>
+      <!-- Dropdowns -->
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <select id="mode-select" style="
+          padding: 10px 15px;
+          font-size: 18px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+          margin: 10px;
+        ">
+          <option value="E-bike">E-bike</option>
+          <option value="E-scooter">E-scooter</option>
+          <option value="Conventional bicycle">Conventional bicycle</option>
+          <option value="Moped">Moped</option>
+          <option value="Other wheeled modes">Other wheeled modes</option>
+        </select>
+
+        <select id="variable-select" style="
+          padding: 10px 15px;
+          font-size: 18px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+          margin: 10px;
+        ">
+          <!-- Will be populated dynamically -->
+        </select>
+      </div>
 
       <!-- Right logo -->
       <img src="logo-UTK.png" alt="University Logo" style="
-        height: 100px;
+        height: 95px;
         width: 200px;
         object-fit: contain;
         padding: 5px;
@@ -123,7 +137,7 @@
       font-size: 14px;
       color: #555;
     ">
-      Created by Sameer Aryal
+      Created by Sameer Aryal at University of Tennessee, Knoxville
     </div>
 
   </div>
@@ -134,6 +148,18 @@
   <script src="us-states.js"></script>
 
   <script>
+    const modeVariables = {
+      'E-bike': [
+        { value: 'Age_Class3', label: 'Age Requirement (Class 3 E-bikes)' },
+        { value: 'Helmet_Grouped', label: 'Helmet Requirement' },
+        { value: 'Sidewalk_Riding', label: 'Sidewalk Riding Restrictions' }
+      ],
+      'E-scooter': [],
+      'Conventional bicycle': [],
+      'Moped': [],
+      'Other wheeled modes': []
+    };
+
     const map = L.map('map').setView([37.8, -96], 4);
     map.zoomControl.setPosition('bottomleft');
 
@@ -172,15 +198,45 @@
           }
         }).addTo(map);
 
-        // Initial legend
-        updateLegend('Age_Class3');
+        // Initialize variable dropdown for default mode
+        updateVariableDropdown('E-bike');
       });
+
+    document.getElementById('mode-select').addEventListener('change', function () {
+      const selectedMode = this.value;
+      updateVariableDropdown(selectedMode);
+    });
 
     document.getElementById('variable-select').addEventListener('change', function () {
       const variable = this.value;
       geojsonLayer.setStyle(feature => getStyle(feature, variable));
       updateLegend(variable);
     });
+
+    function updateVariableDropdown(mode) {
+      const variableSelect = document.getElementById('variable-select');
+      variableSelect.innerHTML = ''; // clear existing options
+
+      if (modeVariables[mode].length === 0) {
+        const option = document.createElement('option');
+        option.textContent = 'No variables yet';
+        variableSelect.appendChild(option);
+        variableSelect.disabled = true;
+      } else {
+        modeVariables[mode].forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.value;
+          option.textContent = item.label;
+          variableSelect.appendChild(option);
+        });
+        variableSelect.disabled = false;
+
+        // Trigger map update with first variable of this mode
+        const firstVariable = modeVariables[mode][0].value;
+        geojsonLayer.setStyle(feature => getStyle(feature, firstVariable));
+        updateLegend(firstVariable);
+      }
+    }
 
     function getStyle(feature, variable) {
       const state = feature.properties.name;
@@ -210,12 +266,12 @@
       }
 
       if (variable === 'Sidewalk_Riding') {
-        if (value === 'Can ride') return '#1a9641'; // Green
-        if (value === 'Cannot ride') return '#d7191c'; // Red
-        if (value === 'Partial allowed') return '#fdae61'; // Orange
-        if (value === 'Cannot ride certain classes') return '#984ea3'; // Purple
-        if (value === 'Cannot ride but can stand and park') return '#377eb8'; // Blue
-        return '#d3d3d3'; // Gray for unknown
+        if (value === 'Can ride') return '#1a9641';
+        if (value === 'Cannot ride') return '#d7191c';
+        if (value === 'Partial allowed') return '#fdae61';
+        if (value === 'Cannot ride certain classes') return '#984ea3';
+        if (value === 'Cannot ride but can stand and park') return '#377eb8';
+        return '#d3d3d3';
       }
 
       return '#ccc';
@@ -266,7 +322,7 @@
             'Can ride': 'Allowed on sidewalks',
             'Partial allowed': 'Allowed with restrictions (minors, business district, age)',
             'Cannot ride certain classes': 'Certain e-bike classes prohibited',
-            'Cannot ride': 'Prohibited for all e-bike classes',
+            'Cannot ride': 'Prohibited for all e-bikes',
             'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
           };
 
