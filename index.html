@@ -40,52 +40,68 @@
       border-radius: 3px;
     }
   </style>
-</head>
 <body>
-  <!-- Wrapper with frame style -->
+  <!-- Wrapper -->
   <div id="map-wrapper" style="
-    border: 5px solid #ccc; 
-    padding: 10px; 
-    max-width: 1200px; 
+    display: flex;
+    flex-direction: column;
+    border: 5px solid #ccc;
+    padding: 10px;
+    max-width: 1200px;
     margin: 0 auto;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     background-color: white;
-    position: relative;
   ">
 
-    <!-- Logos row -->
-    <div id="logos" style="
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      padding: 10px 20px;
+    <!-- Heading -->
+    <div style="
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
     ">
-      <!-- Left Logo (Funder) -->
-      <img src="FunderLogoURL.png" alt="Funder Logo" style="height: 50px;">
-
-      <!-- Right Logo (University) -->
-      <img src="UniversityLogoURL.png" alt="University Logo" style="height: 50px;">
+      Micromobility Regulations in the United States
     </div>
 
-    <!-- Dropdown and Map -->
-    <select id="variable-select">
-      <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
-      <option value="Helmet_Grouped">Helmet Requirement</option>
-    </select>
+    <!-- Logos and dropdown -->
+    <div id="logos" style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 10px 20px;
+    ">
+      <!-- Left logo -->
+      <img src="https://via.placeholder.com/150x50?text=Funder+Logo" alt="Funder Logo" style="height: 50px;">
 
-    <div id="map"></div>
+      <!-- Dropdown in middle -->
+      <select id="variable-select" style="
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        margin: 10px;
+      ">
+        <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
+        <option value="Helmet_Grouped">Helmet Requirement</option>
+      </select>
 
-    <!-- Footer text -->
+      <!-- Right logo -->
+      <img src="https://via.placeholder.com/150x50?text=University+Logo" alt="University Logo" style="height: 50px;">
+    </div>
+
+    <!-- Map -->
+    <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
+
+    <!-- Footer -->
     <div id="footer" style="
-      text-align: center; 
-      padding: 10px; 
-      font-size: 14px; 
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
       color: #555;
     ">
       Created by Sameer Aryal
     </div>
-  </div>
-
 
   <select id="variable-select">
     <option value="Age_Class3">Age Requirement (Class 3 E-bikes)</option>
