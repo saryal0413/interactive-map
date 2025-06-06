@@ -212,9 +212,9 @@
       if (variable === 'Sidewalk_Riding') {
         if (value === 'Can ride') return '#1a9641'; // Green
         if (value === 'Cannot ride') return '#d7191c'; // Red
-        if (value.startsWith('Can ride') && value !== 'Can ride') return '#fdae61'; // Orange Partial
-        if (value.startsWith('Cannot ride a Class')) return '#984ea3'; // Purple
-        if (value === 'Cannot ride but can stand and park.') return '#377eb8'; // Blue
+        if (value === 'Partial allowed') return '#fdae61'; // Orange
+        if (value === 'Cannot ride certain classes') return '#984ea3'; // Purple
+        if (value === 'Cannot ride but can stand and park') return '#377eb8'; // Blue
         return '#d3d3d3'; // Gray for unknown
       }
 
@@ -270,14 +270,14 @@
             'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
           };
 
-          function getColorForLegend(category) {
+          const getColorForLegend = category => {
             if (category === 'Can ride') return '#1a9641';
             if (category === 'Partial allowed') return '#fdae61';
             if (category === 'Cannot ride certain classes') return '#984ea3';
             if (category === 'Cannot ride') return '#d7191c';
             if (category === 'Cannot ride but can stand and park') return '#377eb8';
             return '#d3d3d3';
-          }
+          };
 
           labels = categories.map(cat =>
             `<i style="background:${getColorForLegend(cat)}"></i> ${labelsMap[cat]}`
