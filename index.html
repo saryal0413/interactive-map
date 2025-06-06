@@ -73,7 +73,7 @@
       Micromobility Regulations in United States
     </div>
 
-    <!-- Logos and dropdowns -->
+    <!-- Inside your #logos -->
     <div id="logos" style="
       display: flex;
       justify-content: space-between;
@@ -81,6 +81,7 @@
       flex-wrap: wrap;
       padding: 10px 20px;
     ">
+    
       <!-- Left logo -->
       <img src="logo-funder.jpg" alt="Funder Logo" style="
         height: 80px;
@@ -89,53 +90,82 @@
         padding: 5px;
         box-sizing: border-box;
       ">
-
-      <!-- Dropdowns -->
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <!-- Mode Dropdown -->
-        <label for="mode-select" style="
-          font-size: 16px;
-          font-weight: bold;
-          margin: 5px 0;
-        ">Mode</label>
-      
-        <select id="mode-select" style="
+    
+      <!-- DROPDOWN AREA → REPLACE WITH THIS -->
+      <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      ">
+    
+        <!-- Mode box -->
+        <div style="
+          border: 2px solid #ccc;
+          border-radius: 10px;
           padding: 12px 16px;
-          font-size: 16px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          margin: 8px 0 16px 0;
-          background-color: #fff;
-          cursor: pointer;
+          background-color: #fafafa;
+          width: 250px;
         ">
-          <option value="E-bike">E-bike</option>
-          <option value="E-scooter">E-Scooter</option>
-          <option value="Conventional bicycle">Conventional bicycle</option>
-          <option value="Moped">Moped</option>
-          <option value="Other wheeled modes">Other wheeled modes</option>
-        </select>
-
-        <!-- Variable Dropdown -->
-        <label for="variable-select" style="
-          font-size: 16px;
-          font-weight: bold;
-          margin: 5px 0;
-        ">Variable</label>
-        
-        <select id="variable-select" style="
+          <label for="mode-select" style="
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+          ">Mode</label>
+    
+          <select id="mode-select" style="
+            padding: 12px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
+            color: #333;
+            cursor: pointer;
+            width: 100%;
+          ">
+            <option value="E-bike">E-bike</option>
+            <option value="E-scooter">E-scooter</option>
+            <option value="Conventional bicycle">Conventional bicycle</option>
+            <option value="Moped">Moped</option>
+            <option value="Other wheeled modes">Other wheeled modes</option>
+          </select>
+        </div>
+    
+        <!-- Variable box -->
+        <div style="
+          border: 2px solid #ccc;
+          border-radius: 10px;
           padding: 12px 16px;
-          font-size: 16px;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          margin: 8px 0 16px 0;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-          background-color: #fff;
-          cursor: pointer;
+          background-color: #fafafa;
+          width: 250px;
         ">
-          <!-- Will be populated dynamically -->
-        </select>
+          <label for="variable-select" style="
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+          ">Variable</label>
+    
+          <select id="variable-select" style="
+            padding: 12px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
+            color: #333;
+            cursor: pointer;
+            width: 100%;
+          ">
+            <!-- Will be populated dynamically -->
+          </select>
+        </div>
+    
       </div>
-
+      <!-- END OF DROPDOWN AREA -->
+    
       <!-- Right logo -->
       <img src="logo-UTK.png" alt="University Logo" style="
         height: 95px;
@@ -144,7 +174,9 @@
         padding: 5px;
         box-sizing: border-box;
       ">
+    
     </div>
+
 
     <!-- Map -->
     <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
