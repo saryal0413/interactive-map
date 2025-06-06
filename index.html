@@ -34,6 +34,13 @@
       line-height: 1.2;
       max-width: 250px;
     }
+    @media (max-width: 600px) {
+      .info.legend {
+        font: 14px/18px Arial, sans-serif;
+        max-width: 180px;
+        padding: 8px 12px;
+      }
+    }
     .info.legend i {
       width: 20px;
       height: 20px;
@@ -73,8 +80,10 @@
   <!-- Left logo -->
   <img src="logo-funder.jpg" alt="Funder Logo" style="
     height: 80px;
-    max-width: 200px;
-    object-fit: contain;
+    width: 200px;         /* force same width box */
+    object-fit: contain;  /* keep proportions */
+    padding: 5px;         /* optional padding inside box */
+    box-sizing: border-box;
   ">
 
   <!-- Dropdown in middle -->
@@ -91,9 +100,11 @@
 
   <!-- Right logo -->
   <img src="logo-university.png" alt="University Logo" style="
-    height: 100px;
-    max-width: 200px;
+    height: 80px;
+    width: 200px;         /* same width */
     object-fit: contain;
+    padding: 5px;
+    box-sizing: border-box;
   ">
 </div>
 
