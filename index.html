@@ -350,7 +350,7 @@
         const div = L.DomUtil.create('div', 'info legend');
         let labels = [];
 
-        if (variable === 'Age_Class3') {
+        if (variable === 'Age_Class3_(E-Bike)') {
           const values = ['None', 14, 15, 16, 'NA'];
           labels = values.map(v => {
             const label = v === 'None' ? 'No Restriction'
@@ -360,7 +360,7 @@
           });
         }
 
-        if (variable === 'Helmet_Grouped') {
+        if (variable === 'Helmet_Grouped_(E-Bike)') {
           const categories = ['Under_18', 'Under_16', 'No', 'NA'];
           const labelsMap = {
             'Under_18': 'Under 18 only',
@@ -373,7 +373,7 @@
           );
         }
 
-        if (variable === 'Sidewalk_Riding') {
+        if (variable === 'Sidewalk_restrictions_(E-Bike)') {
           const categories = [
             'Can ride',
             'Partial allowed',
