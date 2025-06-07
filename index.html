@@ -214,9 +214,9 @@
   <script>
     const modeVariables = {
       'E-bike': [
-        { value: 'Age_Class3', label: 'Age Requirement for Class 3 E-bikes' },
-        { value: 'Helmet_Grouped', label: 'Helmet Requirement' },
-        { value: 'Sidewalk_Riding', label: 'Sidewalk Riding Restrictions' }
+        { value: 'Age_Class3_(E-Bike)', label: 'Age Requirement for Class 3 E-bikes' },
+        { value: 'Helmet_Grouped_(E-Bike)', label: 'Helmet Requirement' },
+        { value: 'Sidewalk_Riding_(E-Bike)', label: 'Sidewalk Riding Restrictions' }
       ],
       'E-scooter': [],
       'Conventional bicycle': [],
@@ -252,9 +252,9 @@
             if (row) {
               const popup = `
                 <b>${state}</b><br>
-                Age Requirement (Class 3): ${row.Age_requirement || 'N/A'}<br>
-                Helmet Law: ${row["Helmet_requirement_(Text)"] || 'N/A'}<br>
-                Sidewalk Restrictions: ${row.Sidewalk_restrictions || 'N/A'}<br>
+                Age Requirement (Class 3): ${row.Age_requirement_(E-Bike) || 'N/A'}<br>
+                Helmet Law: ${row["Helmet_requirement_(Text)_(E-Bike)"] || 'N/A'}<br>
+                Sidewalk Restrictions: ${row.Sidewalk_restrictions_(E-Bike) || 'N/A'}<br>
                 <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
                 <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
               layer.bindPopup(popup);
