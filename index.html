@@ -316,20 +316,20 @@
     function getColor(value, variable) {
       if (!value || value === 'NA') return '#d3d3d3';
 
-      if (variable === 'Age_Class3') {
+      if (variable === 'Age_Class3_(E-Bike)') {
         if (value === "None") return "#ffffb2";
         const num = parseInt(value);
         if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
       }
 
-      if (variable === 'Helmet_Grouped') {
+      if (variable === 'Helmet_Grouped_(E-Bike)') {
         if (value === 'Under_18') return '#3288bd';
         if (value === 'Under_16') return '#66c2a5';
         if (value === 'No') return '#fdae61';
         if (value === 'NA') return '#d3d3d3';
       }
 
-      if (variable === 'Sidewalk_Riding') {
+      if (variable === 'Sidewalk_Riding_(E-Bike)') {
         if (value === 'Can ride') return '#1a9641';
         if (value === 'Cannot ride') return '#d7191c';
         if (value === 'Partial allowed') return '#fdae61';
