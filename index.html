@@ -19,7 +19,6 @@
       flex-direction: column;
       height: 100vh;
       width: 95%;
-      max-width: none;
       margin: 0 auto;
       padding: 10px;
       border: 5px solid #ccc;
@@ -33,7 +32,6 @@
       font: 16px/20px Arial, sans-serif;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       border-radius: 8px;
-      line-height: 1.2;
       width: auto;
       max-width: 90vw;
     }
@@ -60,357 +58,236 @@
 
 <body>
 
-  <!-- Wrapper -->
-  <div id="map-wrapper">
+<div id="map-wrapper">
 
-    <!-- Heading -->
-    <div style="
-      text-align: center;
-      font-size: 35px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    ">
-      Micromobility Regulations in United States
-    </div>
-
-    <!-- Inside your #logos -->
-    <div id="logos" style="
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      padding: 10px 20px;
-    ">
-    
-      <!-- Left logo -->
-      <img src="logo-funder.jpg" alt="Funder Logo" style="
-        height: 80px;
-        width: 200px;
-        object-fit: contain;
-        padding: 5px;
-        box-sizing: border-box;
-      ">
-    
-      <!-- DROPDOWN AREA -->
-      <div style="
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 20px;
-      ">
-    
-        <!-- Mode box -->
-        <div style="
-          border: 2px solid #ccc;
-          border-radius: 10px;
-          padding: 12px 16px;
-          background-color: #fafafa;
-          width: 250px;
-          flex: 1 1 250px
-        ">
-          <label for="mode-select" style="
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            display: block;
-          ">Mode</label>
-    
-          <select id="mode-select" style="
-            padding: 12px 16px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            background-color: #f9f9f9;
-            color: #333;
-            cursor: pointer;
-            width: 100%;
-          ">
-            <option value="E-bike">E-bike</option>
-            <option value="E-scooter">E-scooter</option>
-            <option value="Conventional bicycle">Conventional bicycle</option>
-            <option value="Moped">Moped</option>
-            <option value="Other wheeled modes">Other wheeled modes</option>
-          </select>
-        </div>
-    
-        <!-- Variable box -->
-        <div style="
-          border: 2px solid #ccc;
-          border-radius: 10px;
-          padding: 12px 16px;
-          background-color: #fafafa;
-          width: 250px;
-          flex: 1 1 250px
-        ">
-          <label for="variable-select" style="
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 6px;
-            display: block;
-          ">Variable</label>
-    
-          <select id="variable-select" style="
-            padding: 12px 16px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            background-color: #f9f9f9;
-            color: #333;
-            cursor: pointer;
-            width: 100%;
-          ">
-            <!-- Will be populated dynamically -->
-          </select>
-        </div>
-    
-      </div>
-      <!-- END OF DROPDOWN AREA -->
-    
-      <!-- Right logo -->
-      <img src="logo-UTK.png" alt="University Logo" style="
-        height: 95px;
-        width: 200px;
-        object-fit: contain;
-        padding: 5px;
-        box-sizing: border-box;
-      ">
-    
-    </div>
-
-
-    <!-- Map -->
-    <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
-
-    <!-- Footer -->
-    <div id="footer" style="
-      text-align: center;
-      padding: 10px;
-      font-size: 14px;
-      color: #555;
-      line-height: 1.4;
-    ">
-      <div style="font-weight: bold;">
-        Created by Sameer Aryal at the University of Tennessee, Knoxville
-      </div>
-      <div style="
-        font-size: 13px;
-        color: #777;
-        margin-top: 4px;
-        ">
-          for Safety of Micromobility: Regulations, Data, and Stakeholders
-        </div>
-    </div>
-
+  <div style="text-align: center; font-size: 35px; font-weight: bold; margin-bottom: 10px;">
+    Micromobility Regulations in United States
   </div>
 
-  <!-- Scripts -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <script src="us-states.js"></script>
+  <div id="logos" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 10px 20px;">
 
-  <script>
-    const modeVariables = {
-      'E-bike': [
-        { value: 'Age_Class3_(E-Bike)', label: 'Age Requirement for Class 3 E-bikes' },
-        { value: 'Helmet_Grouped_(E-Bike)', label: 'Helmet Requirement' },
-        { value: 'Sidewalk_Riding_(E-Bike)', label: 'Sidewalk Riding Restrictions' }
-      ],
-      'E-scooter': [],
-      'Conventional bicycle': [],
-      'Moped': [],
-      'Other wheeled modes': []
-    };
+    <img src="logo-funder.jpg" alt="Funder Logo" style="height: 80px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
 
-    const map = L.map('map').setView([37.8, -96], 4);
-    map.zoomControl.setPosition('bottomleft');
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px;">
+      <div style="border: 2px solid #ccc; border-radius: 10px; padding: 12px 16px; background-color: #fafafa; width: 250px;">
+        <label for="mode-select" style="font-size: 16px; font-weight: bold; margin-bottom: 6px; display: block;">Mode</label>
+        <select id="mode-select" style="padding: 12px 16px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,0.1); background-color: #f9f9f9; color: #333; cursor: pointer; width: 100%;">
+          <option value="E-bike">E-bike</option>
+          <option value="E-scooter">E-scooter</option>
+          <option value="Conventional bicycle">Conventional bicycle</option>
+          <option value="Moped">Moped</option>
+          <option value="Other wheeled modes">Other wheeled modes</option>
+        </select>
+      </div>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data © OpenStreetMap contributors'
-    }).addTo(map);
+      <div style="border: 2px solid #ccc; border-radius: 10px; padding: 12px 16px; background-color: #fafafa; width: 250px;">
+        <label for="variable-select" style="font-size: 16px; font-weight: bold; margin-bottom: 6px; display: block;">Variable</label>
+        <select id="variable-select" style="padding: 12px 16px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,0.1); background-color: #f9f9f9; color: #333; cursor: pointer; width: 100%;">
+        </select>
+      </div>
+    </div>
 
-    const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
-    let dataLookup = {};
-    let geojsonLayer;
-    let currentLegend;
+    <img src="logo-UTK.png" alt="University Logo" style="height: 95px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
+  </div>
 
-    fetch(sheetURL)
-      .then(response => response.text())
-      .then(csvText => {
-        const data = Papa.parse(csvText, { header: true }).data;
-        data.forEach(row => {
-          dataLookup[row.State] = row;
-        });
+  <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
 
-        geojsonLayer = L.geoJson(statesData, {
-          style: feature => getStyle(feature, 'Age_Class3'),
-          onEachFeature: (feature, layer) => {
-            const state = feature.properties.name;
-            const row = dataLookup[state];
-            if (row) {
-              const popup = `
-                <b>${state}</b><br>
-                Age Requirement (Class 3): ${row.Age_requirement_(E-Bike) || 'N/A'}<br>
-                Helmet Law: ${row["Helmet_requirement_(Text)_(E-Bike)"] || 'N/A'}<br>
-                Sidewalk Restrictions: ${row.Sidewalk_restrictions_(E-Bike) || 'N/A'}<br>
-                <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
-                <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
-              layer.bindPopup(popup);
-            }
-          }
-        }).addTo(map);
+  <div id="footer" style="text-align: center; padding: 10px; font-size: 14px; color: #555; line-height: 1.4;">
+    <div style="font-weight: bold;">Created by Sameer Aryal at the University of Tennessee, Knoxville</div>
+    <div style="font-size: 13px; color: #777; margin-top: 4px;">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
+  </div>
+</div>
 
-        // Initialize variable dropdown for default mode
-        updateVariableDropdown('E-bike');
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="us-states.js"></script>
+
+<script>
+  const modeVariables = {
+    'E-bike': [
+      { value: 'Age_Class3_(E-Bike)', label: 'Age Requirement for Class 3 E-bikes' },
+      { value: 'Helmet_Grouped_(E-Bike)', label: 'Helmet Requirement' },
+      { value: 'Sidewalk_Riding_(E-Bike)', label: 'Sidewalk Riding Restrictions' }
+    ],
+    'E-scooter': [],
+    'Conventional bicycle': [],
+    'Moped': [],
+    'Other wheeled modes': []
+  };
+
+  const map = L.map('map').setView([37.8, -96], 4);
+  map.zoomControl.setPosition('bottomleft');
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data © OpenStreetMap contributors'
+  }).addTo(map);
+
+  const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
+  let dataLookup = {};
+  let geojsonLayer;
+  let currentLegend;
+
+  fetch(sheetURL)
+    .then(response => response.text())
+    .then(csvText => {
+      const data = Papa.parse(csvText, { header: true }).data;
+      data.forEach(row => {
+        dataLookup[row.State] = row;
       });
 
-    document.getElementById('mode-select').addEventListener('change', function () {
-      const selectedMode = this.value;
-      updateVariableDropdown(selectedMode);
+      geojsonLayer = L.geoJson(statesData, {
+        style: feature => getStyle(feature, 'Age_Class3_(E-Bike)'),
+        onEachFeature: (feature, layer) => {
+          const state = feature.properties.name;
+          const row = dataLookup[state];
+          if (row) {
+            const popup = `
+              <b>${state}</b><br>
+              Age Requirement (Class 3): ${row["Age_requirement_(E-Bike)"] || 'N/A'}<br>
+              Helmet Law: ${row["Helmet_requirement_(Text)_(E-Bike)"] || 'N/A'}<br>
+              Sidewalk Restrictions: ${row["Sidewalk_restrictions_(E-Bike)"] || 'N/A'}<br>
+              <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
+              <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
+            layer.bindPopup(popup);
+          }
+        }
+      }).addTo(map);
+
+      updateVariableDropdown('E-bike');
     });
 
-    document.getElementById('variable-select').addEventListener('change', function () {
-      const variable = this.value;
-      geojsonLayer.setStyle(feature => getStyle(feature, variable));
-      updateLegend(variable);
-    });
+  document.getElementById('mode-select').addEventListener('change', function () {
+    updateVariableDropdown(this.value);
+  });
 
-    function updateVariableDropdown(mode) {
-      const variableSelect = document.getElementById('variable-select');
-      variableSelect.innerHTML = ''; // clear existing options
+  document.getElementById('variable-select').addEventListener('change', function () {
+    const variable = this.value;
+    geojsonLayer.setStyle(feature => getStyle(feature, variable));
+    updateLegend(variable);
+  });
 
-      if (modeVariables[mode].length === 0) {
+  function updateVariableDropdown(mode) {
+    const variableSelect = document.getElementById('variable-select');
+    variableSelect.innerHTML = '';
+
+    if (modeVariables[mode].length === 0) {
+      const option = document.createElement('option');
+      option.textContent = 'No variables yet';
+      variableSelect.appendChild(option);
+      variableSelect.disabled = true;
+    } else {
+      modeVariables[mode].forEach(item => {
         const option = document.createElement('option');
-        option.textContent = 'No variables yet';
+        option.value = item.value;
+        option.textContent = item.label;
         variableSelect.appendChild(option);
-        variableSelect.disabled = true;
-      } else {
-        modeVariables[mode].forEach(item => {
-          const option = document.createElement('option');
-          option.value = item.value;
-          option.textContent = item.label;
-          variableSelect.appendChild(option);
-        });
-        variableSelect.disabled = false;
+      });
+      variableSelect.disabled = false;
 
-        // Trigger map update with first variable of this mode
-        const firstVariable = modeVariables[mode][0].value;
-        geojsonLayer.setStyle(feature => getStyle(feature, firstVariable));
-        updateLegend(firstVariable);
-      }
+      const firstVariable = modeVariables[mode][0].value;
+      geojsonLayer.setStyle(feature => getStyle(feature, firstVariable));
+      updateLegend(firstVariable);
+    }
+  }
+
+  function getStyle(feature, variable) {
+    const state = feature.properties.name;
+    const value = dataLookup[state]?.[variable];
+    return {
+      fillColor: getColor(value, variable),
+      weight: 1,
+      color: 'white',
+      fillOpacity: 0.7
+    };
+  }
+
+  function getColor(value, variable) {
+    if (!value || value === 'NA') return '#d3d3d3';
+
+    if (variable === 'Age_Class3_(E-Bike)') {
+      if (value === "None") return "#ffffb2";
+      const num = parseInt(value);
+      if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
     }
 
-    function getStyle(feature, variable) {
-      const state = feature.properties.name;
-      const value = dataLookup[state]?.[variable];
-      return {
-        fillColor: getColor(value, variable),
-        weight: 1,
-        color: 'white',
-        fillOpacity: 0.7
-      };
+    if (variable === 'Helmet_Grouped_(E-Bike)') {
+      if (value === 'Under_18') return '#3288bd';
+      if (value === 'Under_16') return '#66c2a5';
+      if (value === 'No') return '#fdae61';
     }
 
-    function getColor(value, variable) {
-      if (!value || value === 'NA') return '#d3d3d3';
+    if (variable === 'Sidewalk_Riding_(E-Bike)') {
+      if (value === 'Can ride') return '#1a9641';
+      if (value === 'Cannot ride') return '#d7191c';
+      if (value === 'Partial allowed') return '#fdae61';
+      if (value === 'Cannot ride certain classes') return '#984ea3';
+      if (value === 'Cannot ride but can stand and park') return '#377eb8';
+    }
+
+    return '#ccc';
+  }
+
+  function updateLegend(variable) {
+    if (currentLegend) map.removeControl(currentLegend);
+
+    currentLegend = L.control({ position: 'bottomright' });
+
+    currentLegend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'info legend');
+      let labels = [];
 
       if (variable === 'Age_Class3_(E-Bike)') {
-        if (value === "None") return "#ffffb2";
-        const num = parseInt(value);
-        if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
+        const values = ['None', 14, 15, 16, 'NA'];
+        labels = values.map(v => {
+          const label = v === 'None' ? 'No Restriction'
+                      : v === 'NA' ? 'Not Available'
+                      : `${v}+`;
+          return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
+        });
       }
 
       if (variable === 'Helmet_Grouped_(E-Bike)') {
-        if (value === 'Under_18') return '#3288bd';
-        if (value === 'Under_16') return '#66c2a5';
-        if (value === 'No') return '#fdae61';
-        if (value === 'NA') return '#d3d3d3';
+        const categories = ['Under_18', 'Under_16', 'No', 'NA'];
+        const labelsMap = {
+          'Under_18': 'Under 18 only',
+          'Under_16': 'Under 16 only',
+          'No': 'No requirement',
+          'NA': 'Not available'
+        };
+        labels = categories.map(cat =>
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+        );
       }
 
       if (variable === 'Sidewalk_Riding_(E-Bike)') {
-        if (value === 'Can ride') return '#1a9641';
-        if (value === 'Cannot ride') return '#d7191c';
-        if (value === 'Partial allowed') return '#fdae61';
-        if (value === 'Cannot ride certain classes') return '#984ea3';
-        if (value === 'Cannot ride but can stand and park') return '#377eb8';
-        return '#d3d3d3';
+        const categories = [
+          'Can ride',
+          'Partial allowed',
+          'Cannot ride certain classes',
+          'Cannot ride',
+          'Cannot ride but can stand and park'
+        ];
+
+        const labelsMap = {
+          'Can ride': 'Allowed on sidewalks',
+          'Partial allowed': 'Allowed with restrictions (minors, business district, age)',
+          'Cannot ride certain classes': 'Certain e-bike classes prohibited',
+          'Cannot ride': 'Prohibited for all e-bikes',
+          'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
+        };
+
+        labels = categories.map(cat =>
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+        );
       }
 
-      return '#ccc';
-    }
+      div.innerHTML = labels.join('<br>');
+      return div;
+    };
 
-    function updateLegend(variable) {
-      if (currentLegend) map.removeControl(currentLegend);
-
-      currentLegend = L.control({ position: 'bottomright' });
-
-      currentLegend.onAdd = function (map) {
-        const div = L.DomUtil.create('div', 'info legend');
-        let labels = [];
-
-        if (variable === 'Age_Class3_(E-Bike)') {
-          const values = ['None', 14, 15, 16, 'NA'];
-          labels = values.map(v => {
-            const label = v === 'None' ? 'No Restriction'
-                        : v === 'NA' ? 'Not Available'
-                        : `${v}+`;
-            return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
-          });
-        }
-
-        if (variable === 'Helmet_Grouped_(E-Bike)') {
-          const categories = ['Under_18', 'Under_16', 'No', 'NA'];
-          const labelsMap = {
-            'Under_18': 'Under 18 only',
-            'Under_16': 'Under 16 only',
-            'No': 'No requirement',
-            'NA': 'Not available'
-          };
-          labels = categories.map(cat =>
-            `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
-          );
-        }
-
-        if (variable === 'Sidewalk_restrictions_(E-Bike)') {
-          const categories = [
-            'Can ride',
-            'Partial allowed',
-            'Cannot ride certain classes',
-            'Cannot ride',
-            'Cannot ride but can stand and park'
-          ];
-
-          const labelsMap = {
-            'Can ride': 'Allowed on sidewalks',
-            'Partial allowed': 'Allowed with restrictions (minors, business district, age)',
-            'Cannot ride certain classes': 'Certain e-bike classes prohibited',
-            'Cannot ride': 'Prohibited for all e-bikes',
-            'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
-          };
-
-          const getColorForLegend = category => {
-            if (category === 'Can ride') return '#1a9641';
-            if (category === 'Partial allowed') return '#fdae61';
-            if (category === 'Cannot ride certain classes') return '#984ea3';
-            if (category === 'Cannot ride') return '#d7191c';
-            if (category === 'Cannot ride but can stand and park') return '#377eb8';
-            return '#d3d3d3';
-          };
-
-          labels = categories.map(cat =>
-            `<i style="background:${getColorForLegend(cat)}"></i> ${labelsMap[cat]}`
-          );
-        }
-
-        div.innerHTML = labels.join('<br>');
-        return div;
-      };
-
-      currentLegend.addTo(map);
-    }
-  </script>
+    currentLegend.addTo(map);
+  }
+</script>
 
 </body>
 </html>
