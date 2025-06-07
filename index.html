@@ -252,9 +252,9 @@
             if (row) {
               const popup = `
                 <b>${state}</b><br>
-                Age Requirement (Class 3): ${row.Age_Class3 || 'N/A'}<br>
+                Age Requirement (Class 3): ${row.Age_requirement || 'N/A'}<br>
                 Helmet Law: ${row["Helmet_requirement_(Text)"] || 'N/A'}<br>
-                Sidewalk Restrictions: ${row.Sidewalk_Restrictions_Text || 'N/A'}<br>
+                Sidewalk Restrictions: ${row.Sidewalk_restrictions || 'N/A'}<br>
                 <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
                 <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
               layer.bindPopup(popup);
