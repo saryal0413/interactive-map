@@ -4,7 +4,6 @@
   <title>US State Map - E-Bike Policy</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
@@ -143,11 +142,20 @@
           if (row) {
             const popup = `
               <b>${state}</b><br>
-              Age Requirement (Class 3): ${row["Age_requirement_(E-Bike)"] || 'N/A'}<br>
-              Helmet Law: ${row["Helmet_requirement_(Text)_(E-Bike)"] || 'N/A'}<br>
-              Sidewalk Restrictions: ${row["Sidewalk_restrictions_(E-Bike)"] || 'N/A'}<br>
-              <iframe src="${row.PDF_URL}" width="250" height="300" style="border:none;"></iframe><br>
-              <a href="${row.PDF_URL}" target="_blank">Open full PDF</a>`;
+              <div style="margin-top: 6px;">
+                <strong>Age Requirement (Class 3):</strong> ${row["Age_requirement_(E-Bike)"] || 'N/A'}<br>
+                <strong>Helmet Law:</strong> ${row["Helmet_requirement_(Text)_(E-Bike)"] || 'N/A'}<br>
+                <strong>Sidewalk Restrictions:</strong> ${row["Sidewalk_restrictions_(E-Bike)"] || 'N/A'}
+              </div>
+              <div style="margin-top: 12px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt="PDF" width="40" style="vertical-align: middle; margin-right: 8px;">
+                <a href="${row.PDF_URL}" target="_blank" style="
+                  font-size: 16px;
+                  color: #1a73e8;
+                  font-weight: bold;
+                  text-decoration: underline;
+                ">View Full Regulation PDF</a>
+              </div>`;
             layer.bindPopup(popup);
           }
         }
