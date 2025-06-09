@@ -191,8 +191,10 @@
       });
       // === End city markers ===
 
-    });
+      updateVariableDropdown('E-bike');  // DO NOT REMOVE THIS LINE!
+    });  // DO NOT MOVE THIS BRACKET
 
+  // Keep the rest of your code untouched:
   document.getElementById('mode-select').addEventListener('change', function () {
     updateVariableDropdown(this.value);
   });
@@ -226,9 +228,4 @@
       updateLegend(firstVariable);
     }
   }
-
-  // (your getStyle and getColor and updateLegend functions remain unchanged)
 </script>
-
-</body>
-</html>
