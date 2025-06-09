@@ -76,32 +76,6 @@
     Micromobility Regulations in United States
   </div>
 
-  <!-- City List Toggle Button -->
-  <div style="text-align: center; margin-bottom: 10px;">
-    <button id="toggle-city-list" style="
-      background-color: #142b59;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    ">
-      Show/Hide City List
-    </button>
-  </div>
-
-  <!-- City List Container -->
-  <div id="city-list" style="
-    display: none;
-    text-align: center;
-    margin-bottom: 10px;
-    font-family: Arial, sans-serif;
-    color: #142b59;
-    font-size: 16px;
-  ">
-  </div>
-
   <!-- Your dropdowns and logos -->
   <div id="logos" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 10px 20px;">
     <img src="logo-funder.jpg" alt="Funder Logo" style="height: 80px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
@@ -128,8 +102,36 @@
     <img src="logo-UTK.png" alt="University Logo" style="height: 95px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
   </div>
 
+  <!-- Show/Hide City List below dropdowns -->
+  <div style="text-align: center; margin-bottom: 10px;">
+    <button id="toggle-city-list" style="
+      background-color: #142b59;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    ">
+      Show/Hide City List
+    </button>
+  </div>
+
+  <!-- City List Container -->
+  <div id="city-list" style="
+    display: none;
+    text-align: center;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+    color: #142b59;
+    font-size: 16px;
+  ">
+  </div>
+
+  <!-- Map -->
   <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
 
+  <!-- Footer -->
   <div id="footer" style="text-align: center; padding: 10px; font-size: 14px; color: #555; line-height: 1.4;">
     <div style="font-weight: bold;">Created by Sameer Aryal at the University of Tennessee, Knoxville</div>
     <div style="font-size: 13px; color: #777; margin-top: 4px;">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
@@ -142,8 +144,7 @@
 <script src="us-states.js"></script>
 
 <script>
-  // Your existing map logic...
-  // Assuming your fetch() block, updateLegend, getColor, getStyle, updateVariableDropdown are already here
+  // Your existing fetch() block, updateVariableDropdown, updateLegend, getStyle, getColor go here
 
   // Now add cities array and toggle logic:
 
