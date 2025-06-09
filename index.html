@@ -362,6 +362,7 @@
   ];
 
   const cityMarkers = {};
+  let cityMarkersVisible = true; // NEW FLAG for toggling markers
 
   cities.forEach(city => {
     const marker = L.marker(city.coords)
@@ -379,16 +380,26 @@
     cityMarkers[city.name] = marker;
   });
 
-  const cityListDiv = document.getElementById('city-list');
-  cityListDiv.innerHTML = cities.map(city =>
-    `<div style="margin: 5px;">
-      <a href="#" onclick="focusCity('${city.name}'); return false;" style="
-        color: #00539b;
-        text-decoration: underline;
-        font-weight: bold;
-      ">${city.name}</a>
-    </div>`
-  ).join('');
+// NEW toggle button logic — toggles markers visibility
+document.getElementById('toggle-city-list').addEventListener('click', () => {
+  cityMarkersVisible = !cityMarkersVisible;
+
+  Object.values(cityMarkers).forEach(marker => {
+    if (cityMarkersVisible) {
+      marker.addTo(map);
+    } else {
+      map.removeLayer(marker);
+    }
+  });
+});
+
+function focusCity(cityName) {
+  const marker = cityMarkers[cityName];
+  if (marker) {
+    map.setView(marker.getLatLng(), 8);
+    marker.openPopup();
+  }
+}
 
   document.getElementById('toggle-city-list').addEventListener('click', () => {
     const cityList = document.getElementById('city-list');
