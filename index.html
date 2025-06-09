@@ -199,7 +199,106 @@
       updateLegend(firstVariable);
     }
   }
+
+  function getStyle(feature, variable) {
+    const state = feature.properties.name;
+    const value = dataLookup[state]?.[variable];
+    return {
+      fillColor: getColor(value, variable),
+      weight: 1,
+      color: 'white',
+      fillOpacity: 0.7
+    };
+  }
+
+  function getColor(value, variable) {
+    if (!value || value === 'NA') return '#d3d3d3';
+
+    if (variable === 'Age_Class3_(E-Bike)') {
+      if (value === "None") return "#ffffb2";
+      const num = parseInt(value);
+      if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
+    }
+
+    if (variable === 'Helmet_Grouped_(E-Bike)') {
+      if (value === 'Under_18') return '#3288bd';
+      if (value === 'Under_16') return '#66c2a5';
+      if (value === 'No') return '#fdae61';
+    }
+
+    if (variable === 'Sidewalk_Riding_(E-Bike)') {
+      if (value === 'Can ride') return '#1a9641';
+      if (value === 'Cannot ride') return '#d7191c';
+      if (value === 'Partial allowed') return '#fdae61';
+      if (value === 'Cannot ride certain classes') return '#984ea3';
+      if (value === 'Cannot ride but can stand and park') return '#377eb8';
+    }
+
+    return '#ccc';
+  }
+
+  function updateLegend(variable) {
+    if (currentLegend) map.removeControl(currentLegend);
+
+    currentLegend = L.control({ position: 'bottomright' });
+
+    currentLegend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'info legend');
+      let labels = [];
+
+      if (variable === 'Age_Class3_(E-Bike)') {
+        const values = ['None', 14, 15, 16, 'NA'];
+        labels = values.map(v => {
+          const label = v === 'None' ? 'No Restriction'
+                      : v === 'NA' ? 'Not Available'
+                      : `${v}+`;
+          return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
+        });
+      }
+
+      if (variable === 'Helmet_Grouped_(E-Bike)') {
+        const categories = ['Under_18', 'Under_16', 'No', 'NA'];
+        const labelsMap = {
+          'Under_18': 'Under 18 only',
+          'Under_16': 'Under 16 only',
+          'No': 'No requirement',
+          'NA': 'Not available'
+        };
+        labels = categories.map(cat =>
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+        );
+      }
+
+      if (variable === 'Sidewalk_Riding_(E-Bike)') {
+        const categories = [
+          'Can ride',
+          'Partial allowed',
+          'Cannot ride certain classes',
+          'Cannot ride',
+          'Cannot ride but can stand and park'
+        ];
+
+        const labelsMap = {
+          'Can ride': 'Allowed on sidewalks',
+          'Partial allowed': 'Allowed with restrictions (minors, business district, age)',
+          'Cannot ride certain classes': 'Certain e-bike classes prohibited',
+          'Cannot ride': 'Prohibited for all e-bikes',
+          'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
+        };
+
+        labels = categories.map(cat =>
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+        );
+      }
+
+      div.innerHTML = labels.join('<br>');
+      return div;
+    };
+
+    currentLegend.addTo(map);
+  }
 </script>
+
 
 </body>
 </html>
