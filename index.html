@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
     }
-
+  
     #map-wrapper {
       display: flex;
       flex-direction: column;
@@ -24,7 +24,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       background-color: white;
     }
-
+  
     .info.legend {
       background: white;
       padding: 12px 16px;
@@ -34,7 +34,7 @@
       width: auto;
       max-width: 90vw;
     }
-
+  
     .info.legend i {
       width: 20px;
       height: 20px;
@@ -44,7 +44,7 @@
       vertical-align: middle;
       border-radius: 3px;
     }
-
+  
     @media (max-width: 600px) {
       .info.legend {
         font: 14px/18px Arial, sans-serif;
@@ -52,11 +52,57 @@
         max-width: 85vw;
       }
     }
+  
+    /* === START: FTS Brand Style Snippet === */
+    body {
+      font-family: Arial, sans-serif;
+      color: #142b59; /* Primary Navy Blue for body text */
+    }
+  
+    #mode-select,
+    #variable-select {
+      background-color: #7c84a9; /* Primary Tint */
+      color: #ffffff;
+      border: 2px solid #142b59; /* Primary Navy Blue */
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+    }
+  
+    #mode-select:hover, #mode-select:focus,
+    #variable-select:hover, #variable-select:focus {
+      background-color: #142b59; /* Primary Navy Blue */
+      color: #ffffff;
+    }
+  
+    .info.legend {
+      background: #142b59; /* Primary Navy Blue */
+      color: #ffffff;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      padding: 12px 16px;
+      font-size: 16px;
+    }
+  
+    .leaflet-popup-content a {
+      color: #00539b; /* AAA Blue */
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  
+    .leaflet-popup-content a:hover {
+      color: #ec1f2f; /* AAA Red on hover */
+    }
+  
+    #footer {
+      color: #142b59; /* Primary Navy Blue */
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+    /* === END: FTS Brand Style Snippet === */
   </style>
 </head>
 
 <body>
-
 <div id="map-wrapper">
 
   <div style="text-align: center; font-size: 35px; font-weight: bold; margin-bottom: 10px;">
@@ -92,8 +138,7 @@
   <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
 
   <div id="footer" style="text-align: center; padding: 10px; font-size: 14px; color: #555; line-height: 1.4;">
-    <div style="font-weight: bold;">Created by Sameer Aryal at the University of Tennessee, Knoxville</div>
-    <div style="font-size: 13px; color: #777; margin-top: 4px;">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
+    <div style="font-weight: bold;">Created for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
   </div>
 </div>
 
