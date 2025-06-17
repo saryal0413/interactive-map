@@ -150,7 +150,9 @@
       { value: 'Helmet_Grouped_(E-Bike)', label: 'Helmet Requirement' },
       { value: 'Sidewalk_Riding_(E-Bike)', label: 'Sidewalk Riding Restrictions' }
     ],
-    'E-scooter': [],
+    'E-scooter': [
+      { 'E-scooter': [value: 'License_Req_Grouped', label: 'Driver’s License Requirement'}
+    ],
     'Conventional bicycle': [],
     'Moped': [],
     'Other wheeled modes': []
@@ -275,6 +277,15 @@
       if (value === 'Cannot ride certain classes') return '#984ea3';
       if (value === 'Cannot ride but can stand and park') return '#377eb8';
     }
+    
+    if (variable === 'License_Req_Grouped') {
+      if (value === 'DL not required') return '#1a9641'; // Green
+      if (value === 'DL required') return '#d7191c';     // Red
+      if (value === 'DL or permit required') return '#fdae61'; // Orange
+      if (value === 'Mode not defined') return '#d3d3d3'; // Light gray
+      if (value === 'Check this one') return '#984ea3';   // Purple
+    }
+
 
     return '#ccc';
   }
@@ -326,6 +337,22 @@
           'Cannot ride certain classes': 'Certain e-bike classes prohibited',
           'Cannot ride': 'Prohibited for all e-bikes',
           'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
+        };
+
+        if (variable === 'License_Req_Grouped') {
+          const categories = [
+            'DL not required',
+            'DL required',
+            'DL or permit required',
+            'Mode not defined',
+            'Check this one'
+        ];
+        const labelsMap = {
+          'DL not required': 'No license required',
+          'DL required': 'Driver’s license required',
+          'DL or permit required': 'DL, permit, or state ID required',
+          'Mode not defined': 'Mode not defined',
+        
         };
 
         labels = categories.map(cat =>
