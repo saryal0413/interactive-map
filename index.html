@@ -142,7 +142,9 @@
       { value: 'Helmet_Grouped_(E-Bike)', label: 'Helmet Requirement' },
       { value: 'Sidewalk_Riding_(E-Bike)', label: 'Sidewalk Riding Restrictions' }
     ],
-    'E-scooter': [],
+    'E-scooter': [
+      { value: ''License_Req_Grouped', label: 'Driver’s License Requirement' }
+    ],
     'Conventional bicycle': [],
     'Moped': [],
     'Other wheeled modes': []
@@ -263,6 +265,13 @@
       if (value === 'Cannot ride but can stand and park') return '#377eb8';
     }
 
+    if (variable === 'License_Req_Grouped') {
+      if (value === 'DL not required') return '#1a9641';       // Green
+      if (value === 'DL or permit required') return '#fdae61';  // Orange
+      if (value === 'Check this one') return '#d7191c';         // Red
+      if (value === 'Mode not defined') return '#d3d3d3';       // Gray
+    }
+
     return '#ccc';
   }
 
@@ -319,7 +328,20 @@
           `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
         );
       }
-
+      
+      if (variable === 'License_Req_Grouped') {
+        const categories = ['DL not required', 'DL or permit required', 'Check this one', 'Mode not defined'];
+        const lablsMap = {
+          'DL not required': 'No driver’s license required',
+          'DL or permit required': 'License or permit required',
+          'Check this one': 'Unclear or conflicting info',
+          'Mode not defined': 'No data / mode not defined'
+        };
+        labels = categories.map(cat =>
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
+        );
+      }
+      
       div.innerHTML = labels.join('<br>');
       return div;
     };
