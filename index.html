@@ -76,7 +76,6 @@
     Micromobility Regulations in United States
   </div>
 
-  <!-- Your dropdowns and logos -->
   <div id="logos" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 10px 20px;">
     <img src="logo-funder.jpg" alt="Funder Logo" style="height: 80px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
 
@@ -102,7 +101,6 @@
     <img src="logo-UTK.png" alt="University Logo" style="height: 95px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
   </div>
 
-  <!-- Show/Hide City List below dropdowns -->
   <div style="text-align: center; margin-bottom: 10px;">
     <button id="toggle-city-list" style="
       background-color: #142b59;
@@ -112,12 +110,9 @@
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
-    ">
-      Show/Hide City List
-    </button>
+    ">Show/Hide City List</button>
   </div>
 
-  <!-- City List Container -->
   <div id="city-list" style="
     display: none;
     text-align: center;
@@ -125,13 +120,10 @@
     font-family: Arial, sans-serif;
     color: #142b59;
     font-size: 16px;
-  ">
-  </div>
+  "></div>
 
-    <!-- Map -->
   <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
 
-  <!-- Footer -->
   <div id="footer" style="text-align: center; padding: 10px; font-size: 14px; color: #555; line-height: 1.4;">
     <div style="font-weight: bold;">Created by the Team at the University of Tennessee, Knoxville</div>
     <div style="font-size: 13px; color: #777; margin-top: 4px;">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
@@ -182,7 +174,7 @@
           const state = feature.properties.name;
           const row = dataLookup[state];
           if (row) {
-            const popup = 
+            const popup = `
               <b>${state}</b><br>
               <div style="margin-top: 6px;">
                 <strong>Age Requirement (Class 3):</strong> ${row["Age_requirement_(E-Bike)"] || 'N/A'}<br>
@@ -191,13 +183,9 @@
               </div>
               <div style="margin-top: 12px;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt="PDF" width="40" style="vertical-align: middle; margin-right: 8px;">
-                <a href="${row.PDF_URL}" target="_blank" style="
-                  font-size: 16px;
-                  color: #1a73e8;
-                  font-weight: bold;
-                  text-decoration: underline;
-                ">View Full Regulation PDF</a>
-              </div>;
+                <a href="${row.PDF_URL}" target="_blank" style="font-size: 16px; color: #1a73e8; font-weight: bold; text-decoration: underline;">View Full Regulation PDF</a>
+              </div>
+            `;
             layer.bindPopup(popup);
           }
         }
@@ -205,7 +193,6 @@
 
       updateVariableDropdown('E-bike');
       updateLegend('Age_Class3_(E-Bike)');
-      updateVariableDropdown('E-bike');
     });
 
   document.getElementById('mode-select').addEventListener('change', function () {
@@ -293,8 +280,8 @@
         labels = values.map(v => {
           const label = v === 'None' ? 'No Restriction'
                       : v === 'NA' ? 'Not Available'
-                      : ${v}+;
-          return <i style="background:${getColor(v, variable)}"></i> ${label};
+                      : `${v}+`;
+          return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
         });
       }
 
@@ -307,7 +294,7 @@
           'NA': 'Not available'
         };
         labels = categories.map(cat =>
-          <i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
         );
       }
 
@@ -329,7 +316,7 @@
         };
 
         labels = categories.map(cat =>
-          <i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}
+          `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`
         );
       }
 
@@ -339,8 +326,6 @@
 
     currentLegend.addTo(map);
   }
-
-  // CITY MARKERS + TOGGLE
 
   const cities = [
     { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
@@ -362,46 +347,29 @@
   ];
 
   const cityMarkers = {};
-  let cityMarkersVisible = true; // NEW FLAG for toggling markers
+  let cityMarkersVisible = true;
 
   cities.forEach(city => {
     const marker = L.marker(city.coords)
       .addTo(map)
-      .bindPopup(
+      .bindPopup(`
         <strong>${city.name}</strong><br>
-        <a href="${city.pdf_url}" target="_blank" style="
-          font-size: 14px;
-          color: #1a73e8;
-          font-weight: bold;
-          text-decoration: underline;
-        ">View City Regulation PDF</a>
-      );
+        <a href="${city.pdf_url}" target="_blank" style="font-size: 14px; color: #1a73e8; font-weight: bold; text-decoration: underline;">View City Regulation PDF</a>
+      `);
 
     cityMarkers[city.name] = marker;
   });
 
-// NEW toggle button logic — toggles markers visibility
-document.getElementById('toggle-city-list').addEventListener('click', () => {
-  cityMarkersVisible = !cityMarkersVisible;
-
-  Object.values(cityMarkers).forEach(marker => {
-    if (cityMarkersVisible) {
-      marker.addTo(map);
-    } else {
-      map.removeLayer(marker);
-    }
-  });
-});
-
-function focusCity(cityName) {
-  const marker = cityMarkers[cityName];
-  if (marker) {
-    map.setView(marker.getLatLng(), 8);
-    marker.openPopup();
-  }
-}
-
   document.getElementById('toggle-city-list').addEventListener('click', () => {
+    cityMarkersVisible = !cityMarkersVisible;
+    Object.values(cityMarkers).forEach(marker => {
+      if (cityMarkersVisible) {
+        marker.addTo(map);
+      } else {
+        map.removeLayer(marker);
+      }
+    });
+
     const cityList = document.getElementById('city-list');
     cityList.style.display = cityList.style.display === 'none' ? 'block' : 'none';
   });
