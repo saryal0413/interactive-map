@@ -229,6 +229,7 @@
   function getStyle(feature, variable) {
     const state = feature.properties.name;
     const value = dataLookup[state]?.[variable];
+    const fill = getColor(value, variable);
     return {
       fillColor: getColor(value, variable),
       weight: 1,
