@@ -147,6 +147,8 @@
   let dataLookup = {};
   let geojsonLayer;
   let currentLegend;
+  let currentMode = 'E-bike';
+  let currentVariable = 'Age_Class3_(E-Bike)';
 
   fetch(sheetURL)
     .then(response => response.text())
@@ -162,20 +164,16 @@
         onEachFeature: (feature, layer) => {
           const state = feature.properties.name;
           const row = dataLookup[state];
-          if (row) {
-            const popup = `
-              <b>${state}</b><br>
-              <div style="margin-top: 6px;">
-                <strong>Age Requirement (Class 3):</strong> ${row["Age_requirement_(E-Bike)"] || 'N/A'}<br>
-                <strong>Helmet Law:</strong> ${row["Helmet_requirement_(Text)_(E-Bike)"] || 'N/A'}<br>
-                <strong>Sidewalk Restrictions:</strong> ${row["Sidewalk_restrictions_(E-Bike)"] || 'N/A'}
-              </div>
-              <div style="margin-top: 12px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt="PDF" width="40" style="vertical-align: middle; margin-right: 8px;">
-                <a href="${row.PDF_URL}" target="_blank" style="font-size: 16px; color: #1a73e8; font-weight: bold; text-decoration: underline;">View Full Regulation PDF</a>
-              </div>`;
-            layer.bindPopup(popup);
-          }
+          const value = row?.[currentVariable] || 'N/A';
+          const variableLabel = modeVariables[currentMode]?.find(v => v.value === currentVariable)?.label || currentVariable;
+
+          const popup = `
+            <b>${state}</b><br>
+            <strong>Mode:</strong> ${currentMode}<br>
+            <strong>Variable:</strong> ${variableLabel}<br>
+            <strong>Category:</strong> ${value}
+          `;
+          layer.bindPopup(popup);
         }
       }).addTo(map);
 
@@ -193,13 +191,15 @@
     });
 
   document.getElementById('mode-select').addEventListener('change', function () {
+    currentMode = this.value;
     updateVariableDropdown(this.value);
   });
 
   document.getElementById('variable-select').addEventListener('change', function () {
-    const variable = this.value;
-    geojsonLayer.setStyle(feature => getStyle(feature, variable));
-    updateLegend(variable);
+    currentvariable = this.value;
+    geojsonLayer.setStyle(feature => getStyle(feature, currentVariable));
+    updateLegend(currentvariable);
+    updatePopups();
   });
 
   function updateVariableDropdown(mode) {
@@ -393,6 +393,24 @@
     };
 
     currentLegend.addTo(map);
+  }
+
+  function updatePopups(){
+    geojsonLayer.eachLayer(layer => {
+      const state = layer.feature.properties.name;
+      const row = dataLookup[state];
+      const value = row?.[currentVariable] || 'N/A';
+      const variableLabel = modeVariables[currentMode]?.find(v => v.value === currentVariable)?.label || currentVariable;
+
+      const popup = `
+        <b>${state}</b><br>
+        <strong>Mode:</strong> ${currentMode}<br>
+        <strong>Variable:</strong> ${variableLabel}<br>
+        <strong>Category:</strong> ${value}
+      `;
+
+      layer.bindPopup(popup);
+    });
   }
 
   const cities = [
