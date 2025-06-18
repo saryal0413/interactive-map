@@ -233,12 +233,12 @@
       fillColor: getColor(value, variable),
       weight: 1,
       color: 'white',
-      fillOpacity: 0.7
+      fillOpacity: fill ? 0.7 : 0
     };
   }
 
   function getColor(value, variable) {
-    if (!value || value === 'NA') return '#d3d3d3';
+    if (!value || value === 'NA') return null;
 
     if (variable === 'Age_Class3_(E-Bike)') {
       if (value === "None") return "#ffffb2";
@@ -312,11 +312,9 @@
       let labels = [];
 
       if (variable === 'Age_Class3_(E-Bike)') {
-        const values = ['None', 14, 15, 16, 'NA'];
+        const values = ['None', 14, 15, 16];
         labels = values.map(v => {
-          const label = v === 'None' ? 'No Restriction'
-                      : v === 'NA' ? 'Not Available'
-                      : `${v}+`;
+          const label = v === 'None' ? 'No Restriction' : `${v}+`;
           return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
         });
       }
