@@ -58,6 +58,7 @@
     .leaflet-popup-content a:hover {
       color: #ec1f2f;
     }
+
     .leaflet-tooltip.state-label {
       font-size: 7px;
       font-weight: bold;
@@ -117,7 +118,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 <script src="us-states.js"></script>
-  
+
 <script>
   const modeVariables = {
     'E-bike': [
@@ -128,7 +129,7 @@
     'E-scooter': [
       { value: 'License_Req_Grouped', label: 'License Requirement for Riding' },
       { value: 'Age_limit', label: 'Minimum Riding Age' },
-      { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding' }
+      { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding'}
     ],
     'Conventional bicycle': [],
     'Moped': [],
@@ -159,27 +160,19 @@
       });
 
       geojsonLayer = L.geoJson(statesData, {
-        style: feature => getStyle(feature, currentVariable),
+        style: feature => getStyle(feature, 'Age_Class3_(E-Bike)'),
         onEachFeature: (feature, layer) => {
           const state = feature.properties.name;
           const row = dataLookup[state];
-          if (!row) return;
           const value = row?.[currentVariable] || 'N/A';
           const variableLabel = modeVariables[currentMode]?.find(v => v.value === currentVariable)?.label || currentVariable;
-          const pdfURL = row.PDF_URL || '#';
 
-          const popup = `
+          const popup = 
             <b>${state}</b><br>
             <strong>Mode:</strong> ${currentMode}<br>
             <strong>Variable:</strong> ${variableLabel}<br>
-            <strong>Category:</strong> ${value}<br><br>
-            <div style="margin-top: 8px;">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt="PDF" width="20" style="vertical-align: middle; margin-right: 6px;">
-              <a href="${pdfURL}" target="_blank" style="font-size: 14px; color: #1a73e8; font-weight: bold; text-decoration: underline;">
-                View Full Regulation PDF
-              </a>
-            </div>
-          `;
+            <strong>Category:</strong> ${value}
+          ;
           layer.bindPopup(popup);
         }
       }).addTo(map);
@@ -193,75 +186,282 @@
         }).openTooltip();
       });
 
-      updateVariableDropdown(currentMode);
-      updateLegend(currentVariable);
+      updateVariableDropdown('E-bike');
+      updateLegend('Age_Class3_(E-Bike)');
     });
 
   document.getElementById('mode-select').addEventListener('change', function () {
     currentMode = this.value;
-    updateVariableDropdown(currentMode);
+    updateVariableDropdown(this.value);
   });
 
   document.getElementById('variable-select').addEventListener('change', function () {
-    currentVariable = this.value;
+    currentvariable = this.value;
     geojsonLayer.setStyle(feature => getStyle(feature, currentVariable));
-    updateLegend(currentVariable);
+    updateLegend(currentvariable);
     updatePopups();
   });
 
-  // ✅ THIS IS THE FIXED FUNCTION YOU NEEDED
   function updateVariableDropdown(mode) {
     const variableSelect = document.getElementById('variable-select');
     variableSelect.innerHTML = '';
 
-    const variables = modeVariables[mode];
-    if (!variables || variables.length === 0) {
+    if (modeVariables[mode].length === 0) {
       const option = document.createElement('option');
-      option.textContent = 'No variables available';
+      option.textContent = 'No variables yet';
       variableSelect.appendChild(option);
       variableSelect.disabled = true;
-      currentVariable = null;
-      return;
+    } else {
+      modeVariables[mode].forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.value;
+        option.textContent = item.label;
+        variableSelect.appendChild(option);
+      });
+      variableSelect.disabled = false;
+
+      const firstVariable = modeVariables[mode][0].value;
+      geojsonLayer.setStyle(feature => getStyle(feature, firstVariable));
+      updateLegend(firstVariable);
     }
-
-    variables.forEach((item) => {
-      const option = document.createElement('option');
-      option.value = item.value;
-      option.textContent = item.label;
-      variableSelect.appendChild(option);
-    });
-
-    variableSelect.disabled = false;
-    currentVariable = variables[0].value;
-
-    geojsonLayer.setStyle(feature => getStyle(feature, currentVariable));
-    updateLegend(currentVariable);
-    updatePopups();
   }
 
-  function updatePopups() {
+  function getStyle(feature, variable) {
+    const state = feature.properties.name;
+    const value = dataLookup[state]?.[variable];
+    const fill = getColor(value, variable);
+    return {
+      fillColor: getColor(value, variable),
+      weight: 1,
+      color: 'white',
+      fillOpacity: fill ? 0.7 : 0
+    };
+  }
+
+  function getColor(value, variable) {
+    if (!value || value === 'NA') return null;
+
+    if (variable === 'Age_Class3_(E-Bike)') {
+      if (value === "None") return "#ffffb2";
+      const num = parseInt(value);
+      if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
+    }
+
+    if (variable === 'Helmet_Grouped_(E-Bike)') {
+      if (value === 'Under_18') return '#3288bd';
+      if (value === 'Under_16') return '#66c2a5';
+      if (value === 'No') return '#fdae61';
+    }
+
+    if (variable === 'Sidewalk_Riding_(E-Bike)') {
+      if (value === 'Can ride') return '#1a9641';
+      if (value === 'Cannot ride') return '#d7191c';
+      if (value === 'Partial allowed') return '#fdae61';
+      if (value === 'Cannot ride certain classes') return '#984ea3';
+      if (value === 'Cannot ride but can stand and park') return '#377eb8';
+    }
+
+    if (variable === 'License_Req_Grouped') {
+      const colors = {
+        'DL not required': '#1a9641',
+        'DL or permit required': '#fdae61',
+        'DL required': '#d7191c',
+        'Mode not defined': '#cccccc',
+        'prohibited': '#7570b3'
+      };
+      return colors[value] || '#ccc';
+    }
+
+    if (variable === 'Age_limit') {
+      const ageColors = {
+        '8': '#1a9641',
+        '12': '#a6d96a',
+        '14': '#fdae61',
+        '15': '#f46d43',
+        '16': '#d73027',
+        'Mode not defined': '#cccccc',
+        'Regulated at local level': '#ffffbf',
+        'prohibited': '#7570b3'
+      };
+      return ageColors[value] || '#ccc';
+    }
+
+    if (variable === 'Helmet_Requirement') {
+      const helmetColors = {
+        'Not required': '#1a9641',
+        'Under 16': '#a6d96a',
+        'Under 17': '#fdae61',
+        'Under 18': '#f46d43',
+        'Under 19': '#d73027',
+        'Riders all age': '#66c2a5',
+        'Mode not defined': '#cccccc',
+        'Mode prohibited': '#7570b3'
+      };
+      return helmetColors[value] || '#ccc';
+    }
+    
+    return '#ccc';
+  }
+
+  function updateLegend(variable) {
+    if (currentLegend) map.removeControl(currentLegend);
+
+    currentLegend = L.control({ position: 'bottomright' });
+
+    currentLegend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'info legend');
+      let labels = [];
+
+      if (variable === 'Age_Class3_(E-Bike)') {
+        const values = ['None', 14, 15, 16];
+        labels = values.map(v => {
+          const label = v === 'None' ? 'No Restriction' : ${v}+;
+          return <i style="background:${getColor(v, variable)}"></i> ${label};
+        });
+      }
+
+      if (variable === 'Helmet_Grouped_(E-Bike)') {
+        const categories = ['Under_18', 'Under_16', 'No', 'NA'];
+        const labelsMap = {
+          'Under_18': 'Under 18 only',
+          'Under_16': 'Under 16 only',
+          'No': 'No requirement',
+          'NA': 'Not available'
+        };
+        labels = categories.map(cat => <i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]});
+      }
+
+      if (variable === 'Sidewalk_Riding_(E-Bike)') {
+        const categories = [
+          'Can ride',
+          'Partial allowed',
+          'Cannot ride certain classes',
+          'Cannot ride',
+          'Cannot ride but can stand and park'
+        ];
+        const labelsMap = {
+          'Can ride': 'Allowed on sidewalks',
+          'Partial allowed': 'Allowed with restrictions (minors, business district, age)',
+          'Cannot ride certain classes': 'Certain e-bike classes prohibited',
+          'Cannot ride': 'Prohibited for all e-bikes',
+          'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
+        };
+        labels = categories.map(cat => <i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]});
+      }
+    
+      if (variable === 'License_Req_Grouped') {
+        const categories = [
+          'DL not required',
+          'DL or permit required',
+          'DL required',
+          'Mode not defined',
+          'prohibited'
+        ];
+        labels = categories.map(cat => <i style="background:${getColor(cat, variable)}"></i> ${cat});
+      }
+
+      if (variable === 'Age_limit') {
+        const categories = [
+          '8',
+          '12',
+          '14',
+          '15',
+          '16',
+          'Regulated at local level',
+          'Mode not defined',
+          'prohibited'
+        ];
+        labels = categories.map(cat => <i style="background:${getColor(cat, variable)}"></i> ${cat});
+      }
+
+      if (variable === 'Helmet_Requirement') {
+        const categories = [
+          'Not required',
+          'Under 16',
+          'Under 17',
+          'Under 18',
+          'Under 19',
+          'Riders all age',
+          'Mode not defined',
+          'Mode prohibited'
+        ];
+        labels = categories.map(cat => <i style="background:${getColor(cat, variable)}"></i> ${cat});
+      }
+
+      div.innerHTML = labels.join('<br>');
+      return div;
+    };
+
+    currentLegend.addTo(map);
+  }
+
+  function updatePopups(){
     geojsonLayer.eachLayer(layer => {
       const state = layer.feature.properties.name;
       const row = dataLookup[state];
-      if (!row) return;
       const value = row?.[currentVariable] || 'N/A';
       const variableLabel = modeVariables[currentMode]?.find(v => v.value === currentVariable)?.label || currentVariable;
-      const pdfURL = row.PDF_URL || '#';
 
-      const popup = `
+      const popup = 
         <b>${state}</b><br>
         <strong>Mode:</strong> ${currentMode}<br>
         <strong>Variable:</strong> ${variableLabel}<br>
-        <strong>Category:</strong> ${value}<br><br>
-        <div style="margin-top: 8px;">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg" alt="PDF" width="20" style="vertical-align: middle; margin-right: 6px;">
-          <a href="${pdfURL}" target="_blank" style="font-size: 14px; color: #1a73e8; font-weight: bold; text-decoration: underline;">
-            View Full Regulation PDF
-          </a>
-        </div>
-      `;
+        <strong>Category:</strong> ${value}
+      ;
+
       layer.bindPopup(popup);
     });
+  }
+
+  const cities = [
+    { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
+    { name: 'Austin, TX', coords: [30.2672, -97.7431], pdf_url: '#' },
+    { name: 'Boston, MA', coords: [42.3601, -71.0589], pdf_url: '#' },
+    { name: 'Denver, CO', coords: [39.7392, -104.9903], pdf_url: '#' },
+    { name: 'Madison, WI', coords: [43.0731, -89.4012], pdf_url: '#' },
+    { name: 'Minneapolis, MN', coords: [44.9778, -93.2650], pdf_url: '#' },
+    { name: 'Portland, OR', coords: [45.5051, -122.6750], pdf_url: '#' },
+    { name: 'Richmond, VA', coords: [37.5407, -77.4360], pdf_url: '#' },
+    { name: 'St. Louis, MO', coords: [38.6270, -90.1994], pdf_url: '#' },
+    { name: 'Washington, D.C.', coords: [38.9072, -77.0369], pdf_url: '#' },
+    { name: 'New York, NY', coords: [40.7128, -74.0060], pdf_url: '#' },
+    { name: 'Philadelphia, PA', coords: [39.9526, -75.1652], pdf_url: '#' },
+    { name: 'Tampa, FL', coords: [27.9506, -82.4572], pdf_url: '#' },
+    { name: 'Los Angeles, CA', coords: [34.0522, -118.2437], pdf_url: '#' },
+    { name: 'Seattle, WA', coords: [47.6062, -122.3321], pdf_url: '#' },
+    { name: 'Phoenix, AZ', coords: [33.4484, -112.0740], pdf_url: '#' }
+  ];
+
+  const cityMarkers = {};
+  let cityMarkersVisible = true;
+
+  cities.forEach(city => {
+    const marker = L.marker(city.coords)
+      .addTo(map)
+      .bindPopup(<strong>${city.name}</strong><br><a href="${city.pdf_url}" target="_blank" style="font-size: 14px; color: #1a73e8; font-weight: bold; text-decoration: underline;">View City Regulation PDF</a>);
+    cityMarkers[city.name] = marker;
+  });
+
+  document.getElementById('toggle-city-list').addEventListener('click', () => {
+    const cityList = document.getElementById('city-list');
+    cityList.style.display = cityList.style.display === 'none' ? 'block' : 'none';
+
+    cityMarkersVisible = !cityMarkersVisible;
+    Object.values(cityMarkers).forEach(marker => {
+      if (cityMarkersVisible) {
+        marker.addTo(map);
+      } else {
+        map.removeLayer(marker);
+      }
+    });
+  });
+
+  function focusCity(cityName) {
+    const marker = cityMarkers[cityName];
+    if (marker) {
+      map.setView(marker.getLatLng(), 8);
+      marker.openPopup();
+    }
   }
 </script>
 </body>
