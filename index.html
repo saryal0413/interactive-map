@@ -327,8 +327,8 @@
           'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
         };
         labels = categories.map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`);
+      }
     
-
       if (variable === 'License_Req_Grouped') {
         const categories = [
           'DL not required',
