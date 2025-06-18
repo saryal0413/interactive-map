@@ -142,7 +142,8 @@
     .then(csvText => {
       const data = Papa.parse(csvText, { header: true }).data;
       data.forEach(row => {
-        dataLookup[row.State] = row;
+        const trimmedState = row.State.trim();
+        dataLookup[trimmedState] = row;
       });
 
       geojsonLayer = L.geoJson(statesData, {
