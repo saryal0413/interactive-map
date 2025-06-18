@@ -182,7 +182,7 @@
           const state = feature.properties.name;
           const row = dataLookup[state];
           if (row) {
-            const popup = 
+            const popup = `
               <b>${state}</b><br>
               <div style="margin-top: 6px;">
                 <strong>Age Requirement (Class 3):</strong> ${row["Age_requirement_(E-Bike)"] || 'N/A'}<br>
@@ -197,7 +197,7 @@
                   font-weight: bold;
                   text-decoration: underline;
                 ">View Full Regulation PDF</a>
-              </div>;
+              </div>`;
             layer.bindPopup(popup);
           }
         }
@@ -294,7 +294,7 @@
           const label = v === 'None' ? 'No Restriction'
                       : v === 'NA' ? 'Not Available'
                       : ${v}+;
-          return <i style="background:${getColor(v, variable)}"></i> ${label};
+          return `<i style="background:${getColor(v, variable)}"></i> ${label}`;
         });
       }
 
@@ -367,7 +367,7 @@
   cities.forEach(city => {
     const marker = L.marker(city.coords)
       .addTo(map)
-      .bindPopup(
+      .bindPopup(`
         <strong>${city.name}</strong><br>
         <a href="${city.pdf_url}" target="_blank" style="
           font-size: 14px;
@@ -375,7 +375,7 @@
           font-weight: bold;
           text-decoration: underline;
         ">View City Regulation PDF</a>
-      );
+      `);
 
     cityMarkers[city.name] = marker;
   });
