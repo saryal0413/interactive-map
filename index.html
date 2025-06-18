@@ -58,6 +58,17 @@
     .leaflet-popup-content a:hover {
       color: #ec1f2f;
     }
+
+    .leaflet-tooltip.state-label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      text-shadow: 1px 1px 2px #fff;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -167,6 +178,15 @@
           }
         }
       }).addTo(map);
+
+      geojsonLayer.eachLayer(function (layer) {
+        const stateName = layer.feature.properties.name;
+        layer.bindTooltip(stateName, {
+          permanent: true,
+          direction: 'center',
+          className: 'state-label'
+        }).openTooltip();
+      });
 
       updateVariableDropdown('E-bike');
       updateLegend('Age_Class3_(E-Bike)');
