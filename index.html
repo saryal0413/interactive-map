@@ -115,7 +115,11 @@
       { value: 'Helmet_Grouped_(E-Bike)', label: 'Helmet Requirement' },
       { value: 'Sidewalk_Riding_(E-Bike)', label: 'Sidewalk Riding Restrictions' }
     ],
-    'E-scooter': [],
+    'E-scooter': [
+      { value: 'License_Req_Grouped', label: 'License Requirement for Riding' },
+      { value: 'Age_limit', label: 'Minimum Riding Age' },
+      { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding'}
+    ],
     'Conventional bicycle': [],
     'Moped': [],
     'Other wheeled modes': []
@@ -235,6 +239,45 @@
       if (value === 'Cannot ride but can stand and park') return '#377eb8';
     }
 
+    if (variable === 'License_Req_Grouped') {
+      const colors = {
+        'DL not required': '#1a9641',
+        'DL or permit required': '#fdae61',
+        'DL required': '#d7191c',
+        'Mode not defined': '#cccccc',
+        'prohibited': '#7570b3'
+      };
+      return colors[value] || '#ccc';
+    }
+
+    if (variable === 'Age_limit') {
+      const ageColors = {
+        '8': '#1a9641',
+        '12': '#a6d96a',
+        '14': '#fdae61',
+        '15': '#f46d43',
+        '16': '#d73027',
+        'Mode not defined': '#cccccc',
+        'Regulated at local level': '#ffffbf',
+        'prohibited': '#7570b3'
+      };
+      return ageColors[value] || '#ccc';
+    }
+
+    if (variable === 'Helmet_Requirement') {
+      const helmetColors = {
+        'Not required': '#1a9641',
+        'Under 16': '#a6d96a',
+        'Under 17': '#fdae61',
+        'Under 18': '#f46d43',
+        'Under 19': '#d73027',
+        'Riders all age': '#66c2a5',
+        'Mode not defined': '#cccccc',
+        'Mode prohibited': '#7570b3'
+      };
+      return helmetColors[value] || '#ccc';
+    }
+    
     return '#ccc';
   }
 
@@ -284,6 +327,45 @@
           'Cannot ride but can stand and park': 'Cannot ride, but parking allowed'
         };
         labels = categories.map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${labelsMap[cat]}`);
+    
+
+      if (variable === 'License_Req_Grouped') {
+        const categories = [
+          'DL not required',
+          'DL or permit required',
+          'DL required',
+          'Mode not defined',
+          'prohibited'
+        ];
+        labels = categories.map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`);
+      }
+
+      if (variable === 'Age_limit') {
+        const categories = [
+          '8',
+          '12',
+          '14',
+          '15',
+          '16',
+          'Regulated at local level',
+          'Mode not defined',
+          'prohibited'
+        ];
+        labels = categories.map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`);
+      }
+
+      if (variable === 'Helmet_Requirement') {
+        const categories = [
+          'Not required',
+          'Under 16',
+          'Under 17',
+          'Under 18',
+          'Under 19',
+          'Riders all age',
+          'Mode not defined',
+          'Mode prohibited'
+        ];
+        labels = categories.map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`);
       }
 
       div.innerHTML = labels.join('<br>');
