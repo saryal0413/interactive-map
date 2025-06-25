@@ -242,10 +242,16 @@ function getColor(value, variable) {
   }
 
   if (variable === 'Helmet_Grouped_(E-Bike)') {
-    const colors = {
-      'Under_18': '#3288bd',
-      'Under_16': '#66c2a5',
-      'No': '#fdae61'
+    const helmetColors = {
+      '12 or below': '#a6cee3',
+      '14 or below': '#1f78b4',
+      '15 or below': '#b2df8a',
+      '16 or below': '#33a02c',
+      '17 or below': '#fb9a99',
+      '18 or below': '#e31a1c',
+      '21 or below': '#fdbf6f',
+      'Not required': '#cab2d6',
+      'Required for all users': '#6a3d9a'
     };
     return colors[value] || '#ccc';
   }
