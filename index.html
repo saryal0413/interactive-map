@@ -318,8 +318,17 @@ function updateLegend(variable) {
     )].filter(c => c && c !== 'NA' && c !=='Mode not defined');
 
 
+    categories.sort((a, b) => {
+  // Try to sort numerically if both are numbers
+      const numA = parseFloat(a);
+      const numB = parseFloat(b);
 
-      
+  // If both are valid numbers, sort numerically
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+
+  // Otherwise, sort alphabetically
+      return a.localeCompare(b);
+    });
 
     categories.forEach(cat => {
       labels.push(`<i style="background:${getColor(cat, variable)}"></i> ${cat}`);
