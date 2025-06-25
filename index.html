@@ -253,7 +253,13 @@ function getColor(value, variable) {
       'Not required': '#cab2d6',
       'Required for all users': '#6a3d9a'
     };
-    return colors[value] || '#ccc';
+
+    const normalizedValue = value?.trim().toLowerCase();
+    const matchKey = Object.Keys(helmetColors).find(
+      key => key.toLowerCase() === normalizedValue
+    );
+    
+    return helmetColors[matchKey] || '#ccc';
   }
 
   if (variable === 'Sidewalk_Riding_(E-Bike)') {
