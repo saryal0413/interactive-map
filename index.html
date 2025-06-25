@@ -307,8 +307,19 @@ function updateLegend(variable) {
   currentLegend.onAdd = function () {
     const div = L.DomUtil.create('div', 'info legend');
     let labels = [];
+    
+    const categories = [...new Set(
+      Object.values(dataLookup)
+        .filter(row=> {
+          const modeVars = modeVariables[currentMode] || [];
+          return modeVars.some(v => v.value === variable);
+        })
+        .map(row => row?.[variable])
+    )].filter(c => c && c !== 'NA' && c !=='Mode not defined');
 
-    const categories = [...new Set(Object.values(dataLookup).map(row => row?.[variable]))].filter(c => c && c !== 'NA' && c !== 'Mode not defined');
+
+
+      
 
     categories.forEach(cat => {
       labels.push(`<i style="background:${getColor(cat, variable)}"></i> ${cat}`);
