@@ -92,8 +92,7 @@
       </div>
       <div style="border: 2px solid #ccc; border-radius: 10px; padding: 12px 16px; background-color: #fafafa; width: 250px;">
         <label for="variable-select" style="font-size: 16px; font-weight: bold; margin-bottom: 6px; display: block;">Variable</label>
-        <select id="variable-select" style="padding: 12px 16px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; background-color: #f9f9f9; color: #333; cursor: pointer; width: 100%;">
-        </select>
+        <select id="variable-select" style="padding: 12px 16px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; background-color: #f9f9f9; color: #333; cursor: pointer; width: 100%;"></select>
       </div>
     </div>
     <img src="logo-UTK.png" alt="University Logo" style="height: 95px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
@@ -118,6 +117,7 @@
 <script src="us-states.js"></script>
 
 <script>
+/* ======================== CONFIG ======================== */
 const modeVariables = {
   'E-bike': [
     { value: 'Age_Class3_(E-Bike)', label: 'Age Requirement for Class 3 E-bikes' },
@@ -127,13 +127,32 @@ const modeVariables = {
   'E-scooter': [
     { value: 'License_Req_Grouped', label: 'License Requirement for Riding' },
     { value: 'Age_limit', label: 'Minimum Riding Age' },
-    { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding'}
+    { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding' }
   ],
   'Conventional bicycle': [],
   'Moped': [],
   'Other wheeled modes': []
 };
 
+const sidewalkOrder = [
+  'Can ride',
+  'Partial allowed',
+  'Cannot ride but can stand and park',
+  'Cannot ride certain classes',
+  'Cannot ride'
+];
+
+const ageLimitOrder = [
+  '8',
+  '12',
+  '14',
+  '15',
+  '16',
+  'Regulated at local level',
+  'Prohibited'
+];
+
+/* ======================== MAP INIT ======================= */
 const map = L.map('map').setView([37.8, -96], 4);
 map.zoomControl.setPosition('bottomleft');
 
@@ -141,6 +160,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: 'Map data © OpenStreetMap contributors'
 }).addTo(map);
 
+/* ====================== DATA LOAD ======================= */
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
 
 let dataLookup = {};
@@ -150,24 +170,21 @@ let currentMode = 'E-bike';
 let currentVariable = 'Age_Class3_(E-Bike)';
 
 fetch(sheetURL)
-  .then(response => response.text())
-  .then(csvText => {
-    const data = Papa.parse(csvText, { header: true }).data;
+  .then(r => r.text())
+  .then(txt => {
+    const data = Papa.parse(txt, { header: true }).data;
     data.forEach(row => {
       const state = row.State?.trim();
       if (state) dataLookup[state] = row;
     });
 
     geojsonLayer = L.geoJson(statesData, {
-      style: feature => getStyle(feature, currentVariable),
-      onEachFeature: (feature, layer) => {
-        bindPopupToLayer(layer);
-      }
+      style: f => getStyle(f, currentVariable),
+      onEachFeature: (_, layer) => bindPopupToLayer(layer)
     }).addTo(map);
 
     geojsonLayer.eachLayer(layer => {
-      const stateName = layer.feature.properties.name;
-      layer.bindTooltip(stateName, {
+      layer.bindTooltip(layer.feature.properties.name, {
         permanent: true,
         direction: 'center',
         className: 'state-label'
@@ -178,54 +195,49 @@ fetch(sheetURL)
     updateLegend(currentVariable);
   });
 
-document.getElementById('mode-select').addEventListener('change', function () {
-  currentMode = this.value;
+/* =================== UI LISTENERS ======================= */
+document.getElementById('mode-select').addEventListener('change', e => {
+  currentMode = e.target.value;
   updateVariableDropdown(currentMode);
 });
 
-document.getElementById('variable-select').addEventListener('change', function () {
-  currentVariable = this.value;
-  geojsonLayer.setStyle(feature => getStyle(feature, currentVariable));
+document.getElementById('variable-select').addEventListener('change', e => {
+  currentVariable = e.target.value;
+  geojsonLayer.setStyle(f => getStyle(f, currentVariable));
   updateLegend(currentVariable);
   updatePopups();
 });
 
+/* =================== DROPDOWN HANDLER =================== */
 function updateVariableDropdown(mode) {
-  const variableSelect = document.getElementById('variable-select');
-  variableSelect.innerHTML = '';
+  const select = document.getElementById('variable-select');
+  select.innerHTML = '';
 
-  const variables = modeVariables[mode];
-  if (!variables || variables.length === 0) {
-    const option = document.createElement('option');
-    option.textContent = 'No variables available';
-    variableSelect.appendChild(option);
-    variableSelect.disabled = true;
+  const vars = modeVariables[mode];
+  if (!vars.length) {
+    select.innerHTML = '<option>No variables available</option>';
+    select.disabled = true;
     currentVariable = null;
     return;
   }
-
-  variables.forEach(item => {
-    const option = document.createElement('option');
-    option.value = item.value;
-    option.textContent = item.label;
-    variableSelect.appendChild(option);
+  vars.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v.value;
+    opt.textContent = v.label;
+    select.appendChild(opt);
   });
+  select.disabled = false;
+  currentVariable = vars[0].value;
 
-  variableSelect.disabled = false;
-  currentVariable = variables[0].value;
-
-  geojsonLayer.setStyle(feature => getStyle(feature, currentVariable));
+  geojsonLayer.setStyle(f => getStyle(f, currentVariable));
   updateLegend(currentVariable);
   updatePopups();
 }
-</script>
 
-<!-- =============  FIXED SCRIPT BLOCK (style, colour & legend logic) ============= -->
-<script>
+/* =================== STYLE & COLOR ====================== */
 function getStyle(feature, variable) {
-  const state = feature.properties.name;
-  const value = dataLookup[state]?.[variable];
-  const fill = getColor(value, variable);
+  const val = dataLookup[feature.properties.name]?.[variable];
+  const fill = getColor(val, variable);
   return {
     fillColor: fill || '#ccc',
     weight: 1,
@@ -236,13 +248,14 @@ function getStyle(feature, variable) {
 
 function getColor(value, variable) {
   if (!value || value === 'NA' || value === 'Mode not defined') {
-    if variable == 'Age_limit') value ='Regulated at local level';
+    if (variable === 'Age_limit') value = 'Regulated at local level';
     else return '#cccccc';
+  }
 
   if (variable === 'Age_Class3_(E-Bike)') {
-    if (value === "None") return "#ffffb2";
+    if (value === 'None') return '#ffffb2';
     const num = parseInt(value);
-    if (!isNaN(num)) return num >= 16 ? "#1a9641" : "#fdae61";
+    if (!isNaN(num)) return num >= 16 ? '#1a9641' : '#fdae61';
   }
 
   if (variable === 'Helmet_Grouped_(E-Bike)') {
@@ -257,17 +270,12 @@ function getColor(value, variable) {
       'Not required': '#cab2d6',
       'Required for all users': '#6a3d9a'
     };
-
-    const normalizedValue = value?.trim().toLowerCase();
-    const matchKey = Object.keys(helmetColors).find(
-      key => key.toLowerCase() === normalizedValue
-    );
-    
-    return helmetColors[matchKey] || '#ccc';
+    const key = Object.keys(helmetColors).find(k => k.toLowerCase() === value.trim().toLowerCase());
+    return helmetColors[key] || '#ccc';
   }
 
   if (variable === 'Sidewalk_Riding_(E-Bike)') {
-    const v = canonical(value);  // normalize input
+    const v = canonical(value);
     const colors = {
       'can ride': '#1a9641',
       'partial allowed': '#fdae61',
@@ -290,17 +298,17 @@ function getColor(value, variable) {
 
   if (variable === 'Age_limit') {
     let v = canonical(value);
-    if (v === 'mode not defiined') v='regulate at local level';
+    if (v === 'mode not defined') v = 'regulated at local level';
     const ageColors = {
       '8': '#1a9641',
       '12': '#a6d96a',
       '14': '#fdae61',
       '15': '#f46d43',
       '16': '#d73027',
-      'Regulated at local level': '#ffffbf',
+      'regulated at local level': '#ffffbf',
       'prohibited': '#7570b3'
     };
-    return ageColors[value] || '#ccc';
+    return ageColors[v] || '#ccc';
   }
 
   if (variable === 'Helmet_Requirement') {
@@ -319,97 +327,75 @@ function getColor(value, variable) {
   return '#ccc';
 }
 
-// ========================NORMALIZED HELPER===========================
+/* =================== HELPERS ============================ */
 function canonical(val) {
   return (val ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
-//========================== LEGEND BUILDER =================
+
+/* =================== LEGEND ============================= */
 function updateLegend(variable) {
   if (currentLegend) map.removeControl(currentLegend);
   currentLegend = L.control({ position: 'bottomright' });
 
-  currentLegend.onAdd = function () {
+  currentLegend.onAdd = () => {
     const div = L.DomUtil.create('div', 'info legend');
-
-    /* build de-duplicated category list,
-       preserving original label but keyed on canonical form */
     const categoriesMap = new Map();
+
     Object.values(dataLookup).forEach(row => {
       let val = row?.[variable];
-      if (!val || val === 'NA' || val === 'Mode not defined') return;
-
-      if (variable == 'Age_limit' && canonical(val) === 'mode not defined') {
+      if (!val || val === 'NA') return;
+      if (variable === 'Age_limit' && canonical(val) === 'mode not defined') {
         val = 'Regulated at local level';
       }
-      
-      val = val.trim();
       const key = canonical(val);
-      if (!categoriesMap.has(key)) categoriesMap.set(key, val);
+      if (!categoriesMap.has(key)) categoriesMap.set(key, val.trim());
     });
+
     const categories = Array.from(categoriesMap.values());
 
-    // fixed order for sidewalk riding legend
-    const sidewalkOrder = [
-      'Can ride',
-      'Partial allowed',
-      'Cannot ride but can stand and park',
-      'Cannot ride certain classes',
-      'Cannot ride'
-    ];
-
-    const ageLimitOrder = [
-      '8',
-      '12',
-      '14',
-      '15',
-      '16',
-      'Regulated at local level',
-      'Prohibited'
-    ];
-
     const orderedCats = (variable === 'Sidewalk_Riding_(E-Bike)')
-      ? sidewalkOrder.filter(lbl => categoriesMap.has(canonical(lbl)))
-      : categories.sort((a, b) => a.localeCompare(b));
+      ? sidewalkOrder.filter(l => categoriesMap.has(canonical(l)))
+      : (variable === 'Age_limit')
+        ? ageLimitOrder.filter(l => categoriesMap.has(canonical(l)))
+        : categories.sort((a, b) => a.localeCompare(b));
 
     div.innerHTML = orderedCats
       .map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`)
       .join('<br>');
-
     return div;
   };
 
   currentLegend.addTo(map);
 }
 
+/* =================== POPUPS ============================= */
+function bindPopupToLayer(layer) {
+  const state = layer.feature.properties.name;
+  let value = dataLookup[state]?.[currentVariable] || 'N/A';
+  if (currentVariable === 'Age_limit' && canonical(value) === 'mode not defined') {
+    value = 'Regulated at local level';
+  }
+
+  const varLabel = modeVariables[currentMode]
+    .find(v => v.value === currentVariable)?.label || currentVariable;
+
+  const pdf = dataLookup[state]?.PDF_URL || '';
+
+  const html = `
+    <b>${state}</b><br>
+    <strong>Mode:</strong> ${currentMode}<br>
+    <strong>Variable:</strong> ${varLabel}<br>
+    <strong>Category:</strong> ${value}<br>
+    ${pdf ? `<a href="${pdf}" target="_blank">View State Regulation PDF</a>` : ''}
+  `;
+  layer.bindPopup(html);
+}
+
 function updatePopups() {
   geojsonLayer.eachLayer(layer => bindPopupToLayer(layer));
 }
 
-function bindPopupToLayer(layer) {
-  const state = layer.feature.properties.name;
-  const row = dataLookup[state];
-  const value = row?.[currentVariable] || 'N/A';
-
-  if (currentVariable === 'Age_limit' && canonical(value) === 'mode not defined') {
-    value = 'Rugulated at local level';
-  }
-
-  const variableLabel = modeVariables[currentMode]?.find(v => v.value === currentVariable)?.label || currentVariable;
-  const pdf = row?.PDF_URL;
-
-  const popup = `
-    <b>${state}</b><br>
-    <strong>Mode:</strong> ${currentMode}<br>
-    <strong>Variable:</strong> ${variableLabel}<br>
-    <strong>Category:</strong> ${value}<br>
-    ${pdf ? `<a href="${pdf}" target="_blank">View State Regulation PDF</a>` : ''}
-  `;
-  layer.bindPopup(popup);
-}
-</script>
-<!-- ===================== END FIXED SCRIPT BLOCK ====================== -->
-
-<script>
+/* =================== CITY MARKERS ======================= */
 const cities = [
   { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
   { name: 'Austin, TX', coords: [30.2672, -97.7431], pdf_url: '#' },
@@ -432,34 +418,19 @@ const cities = [
 const cityMarkers = {};
 let cityMarkersVisible = true;
 
-cities.forEach(city => {
-  const marker = L.marker(city.coords)
+cities.forEach(c => {
+  cityMarkers[c.name] = L.marker(c.coords)
     .addTo(map)
-    .bindPopup(`<strong>${city.name}</strong><br><a href="${city.pdf_url}" target="_blank" style="font-size: 14px; color: #1a73e8; font-weight: bold; text-decoration: underline;">View City Regulation PDF</a>`);
-  cityMarkers[city.name] = marker;
+    .bindPopup(`<strong>${c.name}</strong><br><a href="${c.pdf_url}" target="_blank">View City Regulation PDF</a>`);
 });
 
 document.getElementById('toggle-city-list').addEventListener('click', () => {
-  const cityList = document.getElementById('city-list');
-  cityList.style.display = cityList.style.display === 'none' ? 'block' : 'none';
+  const list = document.getElementById('city-list');
+  list.style.display = list.style.display === 'none' ? 'block' : 'none';
 
   cityMarkersVisible = !cityMarkersVisible;
-  Object.values(cityMarkers).forEach(marker => {
-    if (cityMarkersVisible) {
-      marker.addTo(map);
-    } else {
-      map.removeLayer(marker);
-    }
-  });
+  Object.values(cityMarkers).forEach(m => cityMarkersVisible ? m.addTo(map) : map.removeLayer(m));
 });
-
-function focusCity(cityName) {
-  const marker = cityMarkers[cityName];
-  if (marker) {
-    map.setView(marker.getLatLng(), 8);
-    marker.openPopup();
-  }
-}
 </script>
 </body>
 </html>
