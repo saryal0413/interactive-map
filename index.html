@@ -219,6 +219,8 @@ function updateVariableDropdown(mode) {
   updatePopups();
 }
 </script>
+
+<!-- =============  FIXED SCRIPT BLOCK (style, colour & legend logic) ============= -->
 <script>
 function getStyle(feature, variable) {
   const state = feature.properties.name;
@@ -263,16 +265,15 @@ function getColor(value, variable) {
   }
 
   if (variable === 'Sidewalk_Riding_(E-Bike)') {
-    const v = canonical(value);
-    
+    const v = canonical(value);  // normalize input
     const colors = {
-      'Can ride': '#1a9641',
-      'Partial allowed': '#fdae61',
-      'Cannot ride certain classes': '#984ea3',
-      'Cannot ride': '#d7191c',
-      'Cannot ride but can stand and park': '#377eb8'
+      'can ride': '#1a9641',
+      'partial allowed': '#fdae61',
+      'cannot ride certain classes': '#984ea3',
+      'cannot ride': '#d7191c',
+      'cannot ride but can stand and park': '#377eb8'
     };
-    return colors[value] || '#ccc';
+    return colors[v] || '#ccc';
   }
 
   if (variable === 'License_Req_Grouped') {
@@ -314,45 +315,47 @@ function getColor(value, variable) {
   return '#ccc';
 }
 
+// ---------- helper: trims, collapses multiple spaces, lowers case ----------
 function canonical(val) {
-  return (val ??'').trim().replace(/\s+/g,''). toLowerCase();
+  return (val ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
-  
+
 function updateLegend(variable) {
   if (currentLegend) map.removeControl(currentLegend);
   currentLegend = L.control({ position: 'bottomright' });
 
   currentLegend.onAdd = function () {
     const div = L.DomUtil.create('div', 'info legend');
-    let labels = [];
-    
-    const categories = [...new Set(
-      Object.values(dataLookup)
-        .filter(row=> {
-          const modeVars = modeVariables[currentMode] || [];
-          return modeVars.some(v => v.value === variable);
-        })
-        .map(row => row?.[variable])
-    )].filter(c => c && c !== 'NA' && c !=='Mode not defined');
 
-
-    categories.sort((a, b) => {
-  // Try to sort numerically if both are numbers
-      const numA = parseFloat(a);
-      const numB = parseFloat(b);
-
-  // If both are valid numbers, sort numerically
-      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-
-  // Otherwise, sort alphabetically
-      return a.localeCompare(b);
+    /* build de-duplicated category list,
+       preserving original label but keyed on canonical form */
+    const categoriesMap = new Map();
+    Object.values(dataLookup).forEach(row => {
+      let val = row?.[variable];
+      if (!val || val === 'NA' || val === 'Mode not defined') return;
+      val = val.trim();
+      const key = canonical(val);
+      if (!categoriesMap.has(key)) categoriesMap.set(key, val);
     });
+    const categories = Array.from(categoriesMap.values());
 
-    categories.forEach(cat => {
-      labels.push(`<i style="background:${getColor(cat, variable)}"></i> ${cat}`);
-    });
+    // fixed order for sidewalk riding legend
+    const sidewalkOrder = [
+      'Can ride',
+      'Partial allowed',
+      'Cannot ride but can stand and park',
+      'Cannot ride certain classes',
+      'Cannot ride'
+    ];
 
-    div.innerHTML = labels.join('<br>');
+    const orderedCats = (variable === 'Sidewalk_Riding_(E-Bike)')
+      ? sidewalkOrder.filter(lbl => categoriesMap.has(canonical(lbl)))
+      : categories.sort((a, b) => a.localeCompare(b));
+
+    div.innerHTML = orderedCats
+      .map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`)
+      .join('<br>');
+
     return div;
   };
 
@@ -379,7 +382,10 @@ function bindPopupToLayer(layer) {
   `;
   layer.bindPopup(popup);
 }
+</script>
+<!-- ===================== END FIXED SCRIPT BLOCK ====================== -->
 
+<script>
 const cities = [
   { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
   { name: 'Austin, TX', coords: [30.2672, -97.7431], pdf_url: '#' },
