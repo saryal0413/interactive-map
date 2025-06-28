@@ -7,8 +7,10 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
     html,body{height:100%;margin:0;font-family:Arial,sans-serif;color:#142b59}
-    #map-wrapper{display:flex;flex-direction:column;height:100vh;width:95%;margin:0 auto;padding:10px;border:5px solid #ccc;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#fff}
-    .info.legend{background:#142b59;color:#fff;padding:12px;font:16px/20px Arial,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;max-width:90vw}
+    #map-wrapper{display:flex;flex-direction:column;height:100vh;width:95%;margin:0 auto;
+                 padding:10px;border:5px solid #ccc;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#fff}
+    .info.legend{background:#142b59;color:#fff;padding:12px;font:16px/20px Arial,sans-serif;
+                 box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;max-width:90vw}
     .info.legend i{width:20px;height:20px;display:inline-block;margin-right:10px;margin-bottom:5px;vertical-align:middle;border-radius:3px}
     .leaflet-tooltip.state-label{font-size:7px;font-weight:bold;background:transparent;border:none;text-shadow:1px 1px 2px #fff}
   </style>
@@ -18,7 +20,7 @@
 <div id="map-wrapper">
   <div style="text-align:center;font-size:35px;font-weight:bold;margin-bottom:10px;">Micromobility Regulations in United States</div>
 
-  <!-- controls -->
+  <!-- top controls -->
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 20px;">
     <img src="logo-funder.jpg" style="height:80px;width:200px;object-fit:contain;">
     <div style="display:flex;flex-wrap:wrap;gap:20px;">
@@ -82,123 +84,153 @@ const modeVars={
 /* ---------- LEGEND ORDERS ---------- */
 const orders={
   /* E-bike */
+  'Age_limit':['8','12','14','15','16','Regulated at local level','prohibited'],
   'Helmet_Grouped_(E-Bike)':['Not required','15 or below','16 or below','18 or below','21 or below','Required for all users'],
   'Sidewalk_Riding_(E-Bike)':['Can ride','Partial allowed','Cannot ride certain classes','Cannot ride but can stand and park','Cannot ride'],
   /* E-scooter */
   'License_Req_Grouped':['DL not required','DL or permit required','DL required','prohibited'],
-  'Age_limit':['8','12','14','15','16','Regulated at local level','prohibited'],
   'Helmet_Requirement':['Not required','Under 16','Under 17','Under 18','Under 19','Riders all age','Mode prohibited'],
   /* Bike */
-  'Sidewalk_restrictions(BIKE)':['Can ride on the sidewalks','Can ride on the sidewalks with exceptions','Cannot ride on sidewalk, unless local law permits','Cannot ride on the sidewalks'],
-  'Helmet_Law(BIKE)':['Not required','Required for users under 12','Required for users under 14','Required for users under 15','Required for users under 16','Required for users under 17','Required for users under 18'],
-  'specific_equipment_requirements(BIKE)':['Front and rear lights, brakes','Front and rear lights','Lights + reflectors / seat / other','Includes serial number','Unspecified / Other'],
+  'Sidewalk_restrictions(BIKE)':['Can ride on the sidewalks','Can ride on the sidewalks with exceptions',
+                                 'Cannot ride on sidewalk, unless local law permits','Cannot ride on the sidewalks'],
+  'Helmet_Law(BIKE)':['Not required','Required for users under 12','Required for users under 14','Required for users under 15',
+                      'Required for users under 16','Required for users under 17','Required for users under 18'],
+  'specific_equipment_requirements(BIKE)':['Front and rear lights, brakes','Front and rear lights',
+      'Lights + reflectors / seat / other','Includes serial number','Unspecified / Other'],
   'Access(BIKE)':['Fully allowed','Allowed unless signage prohibits','Prohibited unless signage allows','Conditional or discretionary'],
   'Motor_Vehicle_passing_distance(BIKE)':['2 ft','3 ft','4 ft','6 ft','Speed-based (3 or 6 ft)','Adjacent lane','Safe distance'],
   /* Moped */
-  'License_Requirment(Moped)':['Standard driver’s license required','Motorcycle license required','Moped permit or learner\'s permit allowed','No license required under threshold','Unclear or other'],
+  'License_Requirment(Moped)':['Standard driver’s license required','Motorcycle license required',
+                               'Moped permit or learner\'s permit allowed','No license required under threshold','Unclear or other'],
   'Registration_requirement(Moped)':['Registration required','Registration not required','Unclear / Needs clarification'],
-  'Helmet_requirement(Moped)':['No helmet required','Required under 18','Required under 21','Universal helmet law','Conditional or exempt','Unclear or other'],
+  'Helmet_requirement(Moped)':['No helmet required','Required under 18','Required under 21',
+                               'Universal helmet law','Conditional or exempt','Unclear or other'],
   'Age_Requirement(Moped)':['15–15.5 with permit/course','16 and above','Under 15 with special license/permit','None specified','Unclear'],
   'Bikepath_restrictions(Moped)':['Restricted','Not restricted','Allowed on bike paths','Conditional / unclear'],
   'Insurance_requirment(Moped)':['Insurance required','Insurance not required','Unclear']
 };
 
-/* ---------- COLOR LOOK-UPS ---------- */
-const C={/* short alias for colour maps */};
-/* E-bike colours */
-C.helmetE={'Not required':'#cab2d6','15 or below':'#b2df8a','16 or below':'#33a02c','18 or below':'#e31a1c','21 or below':'#fdbf6f','Required for all users':'#6a3d9a'};
-C.sidewalkE={'can ride':'#1a9641','partial allowed':'#fdae61','cannot ride certain classes':'#984ea3','cannot ride but can stand and park':'#377eb8','cannot ride':'#d73027'};
-/* E-scooter colours */
-C.licenseS={'DL not required':'#1a9641','DL or permit required':'#fdae61','DL required':'#d73027','prohibited':'#7570b3'};
-C.ageS={'8':'#1a9641','12':'#a6d96a','14':'#fdae61','15':'#f46d43','16':'#d73027','regulated at local level':'#ffffbf','prohibited':'#7570b3'};
-C.helmetS={'Not required':'#1a9641','Under 16':'#a6d96a','Under 17':'#fdae61','Under 18':'#f46d43','Under 19':'#d73027','Riders all age':'#66c2a5','Mode prohibited':'#7570b3'};
-/* Bike colours */
-C.sidewalkB={'Can ride on the sidewalks':'#1a9641','Can ride on the sidewalks with exceptions':'#fdae61','Cannot ride on sidewalk, unless local law permits':'#377eb8','Cannot ride on the sidewalks':'#d73027'};
-C.helmetB={'Not required':'#1a9641','Required for users under 12':'#d4eea2','Required for users under 14':'#ffffb2','Required for users under 15':'#fed976','Required for users under 16':'#feb24c','Required for users under 17':'#fd8d3c','Required for users under 18':'#e31a1c'};
-C.equipB={'Front and rear lights, brakes':'#1a9641','Front and rear lights':'#a6d96a','Lights + reflectors / seat / other':'#fdae61','Includes serial number':'#ff7f00','Unspecified / Other':'#cccccc'};
-C.accessB={'Fully allowed':'#1a9641','Allowed unless signage prohibits':'#fdae61','Prohibited unless signage allows':'#d73027','Conditional or discretionary':'#8c8c8c'};
-C.passB={'2 ft':'#d9f0a3','3 ft':'#a6d96a','4 ft':'#66bd63','6 ft':'#1a9641','Speed-based (3 or 6 ft)':'#fdae61','Adjacent lane':'#fc8d59','Safe distance':'#8c6bb1'};
-/* Moped colours */
-C.licM={'Standard driver’s license required':'#1a9641','Motorcycle license required':'#d73027','Moped permit or learner\'s permit allowed':'#fdae61','No license required under threshold':'#66bd63','Unclear or other':'#cccccc'};
-C.regM={'Registration required':'#1f78b4','Registration not required':'#a6cee3','Unclear / Needs clarification':'#cccccc'};
-C.helmM={'No helmet required':'#1a9641','Required under 18':'#a6d96a','Required under 21':'#fdae61','Universal helmet law':'#d73027','Conditional or exempt':'#8c8c8c','Unclear or other':'#cccccc'};
-C.ageM={'15–15.5 with permit/course':'#fdae61','16 and above':'#1a9641','Under 15 with special license/permit':'#d73027','None specified':'#66c2a5','Unclear':'#cccccc'};
-C.pathM={'Restricted':'#d73027','Not restricted':'#1a9641','Allowed on bike paths':'#66bd63','Conditional / unclear':'#cccccc'};
-C.insM={'Insurance required':'#d73027','Insurance not required':'#1a9641','Unclear':'#cccccc'};
-
-function colourOf(val,v){
-  if(!val||val==='NA') return '#ccc';
-  const c=(x)=>x.trim(); /* helper */
+/* ---------- COLOUR DICTIONARIES ---------- */
+const colour={
   /* E-bike */
-  if(v==='Helmet_Grouped_(E-Bike)')      return C.helmetE[c(val)]||'#ccc';
-  if(v==='Sidewalk_Riding_(E-Bike)')     return C.sidewalkE[ c(val.toLowerCase()) ]||'#ccc';
-  if(v==='Age_Class3_(E-Bike)'){         if(val==='None')return'#ffffb2';return parseInt(val)>=16?'#1a9641':'#fdae61';}
+  helmetE:{'not required':'#cab2d6','15 or below':'#b2df8a','16 or below':'#33a02c','18 or below':'#e31a1c','21 or below':'#fdbf6f','required for all users':'#6a3d9a'},
+  sidewalkE:{'can ride':'#1a9641','partial allowed':'#fdae61','cannot ride certain classes':'#984ea3',
+             'cannot ride but can stand and park':'#377eb8','cannot ride':'#d73027'},
   /* E-scooter */
-  if(v==='License_Req_Grouped')          return C.licenseS[c(val)]||'#ccc';
-  if(v==='Age_limit'){                   const k=c(val)==='mode not defined'?'regulated at local level':c(val);return C.ageS[k]||'#ccc';}
-  if(v==='Helmet_Requirement')           return C.helmetS[c(val)]||'#ccc';
+  licenseS:{'dl not required':'#1a9641','dl or permit required':'#fdae61','dl required':'#d73027','prohibited':'#7570b3'},
+  helmetS:{'not required':'#1a9641','under 16':'#a6d96a','under 17':'#fdae61','under 18':'#f46d43',
+           'under 19':'#d73027','riders all age':'#66c2a5','mode prohibited':'#7570b3'},
   /* Bike */
-  if(v==='Sidewalk_restrictions(BIKE)')  return C.sidewalkB[c(val)]||'#ccc';
-  if(v==='Helmet_Law(BIKE)')             return C.helmetB[c(val)]||'#ccc';
-  if(v==='specific_equipment_requirements(BIKE)') return C.equipB[c(val)]||'#ccc';
-  if(v==='Access(BIKE)')                 return C.accessB[c(val)]||'#ccc';
-  if(v==='Motor_Vehicle_passing_distance(BIKE)'){let k=c(val);if(k==='3 ft for under 35mph, 6ft for over')k='Speed-based (3 or 6 ft)';if(k.startsWith('adjacent lane'))k='Adjacent lane';if(k.startsWith('safe'))k='Safe distance';return C.passB[k]||'#ccc';}
+  sidewalkB:{'can ride on the sidewalks':'#1a9641','can ride on the sidewalks with exceptions':'#fdae61',
+             'cannot ride on sidewalk, unless local law permits':'#377eb8','cannot ride on the sidewalks':'#d73027'},
+  helmetB:{'not required':'#1a9641','required for users under 12':'#d4eea2','required for users under 14':'#ffffb2','required for users under 15':'#fed976',
+           'required for users under 16':'#feb24c','required for users under 17':'#fd8d3c','required for users under 18':'#e31a1c'},
+  equipB:{'front and rear lights, brakes':'#1a9641','front and rear lights':'#a6d96a',
+          'lights + reflectors / seat / other':'#fdae61','includes serial number':'#ff7f00','unspecified / other':'#cccccc'},
+  accessB:{'fully allowed':'#1a9641','allowed unless signage prohibits':'#fdae61',
+           'prohibited unless signage allows':'#d73027','conditional or discretionary':'#8c8c8c'},
+  passB:{'2 ft':'#d9f0a3','3 ft':'#a6d96a','4 ft':'#66bd63','6 ft':'#1a9641',
+         'speed-based (3 or 6 ft)':'#fdae61','adjacent lane':'#fc8d59','safe distance':'#8c6bb1'},
   /* Moped */
-  if(v==='License_Requirment(Moped)')    return C.licM[c(val)]||'#ccc';
-  if(v==='Registration_requirement(Moped)')return C.regM[c(val)]||'#ccc';
-  if(v==='Helmet_requirement(Moped)')    return C.helmM[c(val)]||'#ccc';
-  if(v==='Age_Requirement(Moped)')       return C.ageM[c(val)]||'#ccc';
-  if(v==='Bikepath_restrictions(Moped)') return C.pathM[c(val)]||'#ccc';
-  if(v==='Insurance_requirment(Moped)')  return C.insM[c(val)]||'#ccc';
-  /* fallback */ return '#ccc';
+  licM:{'standard driver’s license required':'#1a9641','motorcycle license required':'#d73027',
+        'moped permit or learner\'s permit allowed':'#fdae61','no license required under threshold':'#66bd63','unclear or other':'#cccccc'},
+  regM:{'registration required':'#1f78b4','registration not required':'#a6cee3','unclear / needs clarification':'#cccccc'},
+  helmM:{'no helmet required':'#1a9641','required under 18':'#a6d96a','required under 21':'#fdae61',
+         'universal helmet law':'#d73027','conditional or exempt':'#8c8c8c','unclear or other':'#cccccc'},
+  ageM:{'15–15.5 with permit/course':'#fdae61','16 and above':'#1a9641','under 15 with special license/permit':'#d73027',
+        'none specified':'#66c2a5','unclear':'#cccccc'},
+  pathM:{'restricted':'#d73027','not restricted':'#1a9641','allowed on bike paths':'#66bd63','conditional / unclear':'#cccccc'},
+  insM:{'insurance required':'#d73027','insurance not required':'#1a9641','unclear':'#cccccc'}
+};
+
+/* ---------- HELPERS ---------- */
+const canon=v=>(v||'').trim().toLowerCase();
+function colourOf(raw,v){
+  if(!raw||raw==='NA') return '#ccc'; const cv=canon(raw);
+  switch(v){
+    /* E-bike */
+    case 'Age_Class3_(E-Bike)':        return raw==='None'?'#ffffb2':(parseInt(raw)>=16?'#1a9641':'#fdae61');
+    case 'Helmet_Grouped_(E-Bike)':    return colour.helmetE[cv]||'#ccc';
+    case 'Sidewalk_Riding_(E-Bike)':   return colour.sidewalkE[cv]||'#ccc';
+    /* E-scooter */
+    case 'License_Req_Grouped':        return colour.licenseS[cv]||'#ccc';
+    case 'Age_limit':                  return colour.ageS[cv==='mode not defined'?'regulated at local level':cv]||'#ccc';
+    case 'Helmet_Requirement':         return colour.helmetS[cv]||'#ccc';
+    /* Bike */
+    case 'Sidewalk_restrictions(BIKE)':return colour.sidewalkB[raw]||'#ccc';
+    case 'Helmet_Law(BIKE)':           return colour.helmetB[raw]||'#ccc';
+    case 'specific_equipment_requirements(BIKE)':return colour.equipB[raw]||'#ccc';
+    case 'Access(BIKE)':               return colour.accessB[raw]||'#ccc';
+    case 'Motor_Vehicle_passing_distance(BIKE)':{
+      let lab=raw; const c=canon(raw);
+      if(c==='3 ft for under 35mph, 6ft for over') lab='Speed-based (3 or 6 ft)';
+      if(c.startsWith('adjacent lane'))            lab='Adjacent lane';
+      if(c.startsWith('safe'))                     lab='Safe distance';
+      return colour.passB[canon(lab)]||'#ccc';
+    }
+    /* Moped */
+    case 'License_Requirment(Moped)':         return colour.licM[cv]||'#ccc';
+    case 'Registration_requirement(Moped)':   return colour.regM[cv]||'#ccc';
+    case 'Helmet_requirement(Moped)':         return colour.helmM[cv]||'#ccc';
+    case 'Age_Requirement(Moped)':            return colour.ageM[cv]||'#ccc';
+    case 'Bikepath_restrictions(Moped)':       return colour.pathM[cv]||'#ccc';
+    case 'Insurance_requirment(Moped)':       return colour.insM[cv]||'#ccc';
+  }
+  return '#ccc';
 }
 
-/* ---------- MAP ---------- */
+/* ---------- MAP INITIALISE ---------- */
 const map=L.map('map').setView([37.8,-96],4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
 
 let data={},layer,legend,curMode='E-bike',curVar=modeVars['E-bike'][0].value;
 
-/* --- Load sheet --- */
+/* ---------- LOAD DATA ---------- */
 fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv')
 .then(r=>r.text()).then(txt=>{
   Papa.parse(txt,{header:true}).data.forEach(r=>{const s=r.State?.trim();if(s)data[s]=r;});
-  layer=L.geoJson(statesData,{style:f=>({fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),weight:1,color:'#fff',fillOpacity:.7})}).addTo(map);
-  populateDropdown('E-bike'); updateLegend(curVar);
+  layer=L.geoJson(statesData,{style:f=>styleFn(f),onEachFeature:(f,l)=>bindPopup(l)}).addTo(map);
+  layer.eachLayer(l=>l.bindTooltip(l.feature.properties.name,{permanent:true,direction:'center',className:'state-label'}));
+  populateDropdown(curMode); updateLegend();
 });
 
-/* Dropdown population */
-function populateDropdown(mode){
-  const sel=document.getElementById('variable-select'); sel.innerHTML='';
-  modeVars[mode].forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
-  curVar=modeVars[mode][0].value; refreshMap();
+/* ---------- STYLE & POPUPS ---------- */
+function styleFn(f){return{fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),weight:1,color:'#fff',fillOpacity:.7};}
+function bindPopup(layer){
+  const st=layer.feature.properties.name;
+  const val=data[st]?.[curVar]||'N/A';
+  const lbl=modeVars[curMode].find(o=>o.value===curVar)?.label||curVar;
+  const pdf=data[st]?.PDF_URL||''
+  layer.bindPopup(`<b>${st}</b><br><strong>${lbl}:</strong> ${val}${pdf?`<br><a href="${pdf}" target="_blank" style="font-weight:bold;color:#00539b;text-decoration:underline;">View State Regulation PDF</a>`:''}`);
 }
 
-/* Redraw map & legend */
-function refreshMap(){ layer.setStyle(f=>({fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),weight:1,color:'#fff',fillOpacity:.7})); updateLegend(curVar); }
-
-/* Legend builder */
-function updateLegend(v){
+/* ---------- LEGEND ---------- */
+function updateLegend(){
   if(legend) map.removeControl(legend);
   legend=L.control({position:'bottomright'});
   legend.onAdd=()=>{
     const div=L.DomUtil.create('div','info legend');
-    const present=new Set(Object.values(data).map(r=>r[v]).filter(x=>x&&x!=='NA'));
-    const list=(orders[v]||Array.from(present).sort()).filter(c=>present.has(c));
-    div.innerHTML=list.map(c=>`<i style="background:${colourOf(c,v)}"></i> ${c}`).join('<br>');
+    const present=new Set(Object.values(data).map(r=>r[curVar]).filter(x=>x&&x!=='NA'));
+    const list=(orders[curVar]||Array.from(present).sort()).filter(c=>present.has(c));
+    div.innerHTML=list.map(c=>`<i style="background:${colourOf(c,curVar)}"></i> ${c}`).join('<br>');
     return div;
   }; legend.addTo(map);
 }
 
-/* Events */
+/* ---------- DROPDOWN BEHAVIOUR ---------- */
+function populateDropdown(mode){
+  const sel=document.getElementById('variable-select'); sel.innerHTML='';
+  modeVars[mode].forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
+  curVar=modeVars[mode][0].value; redraw();
+}
+function redraw(){ layer.setStyle(styleFn); updateLegend(); layer.eachLayer(bindPopup); }
 document.getElementById('mode-select').onchange=e=>{curMode=e.target.value;populateDropdown(curMode);};
-document.getElementById('variable-select').onchange=e=>{curVar=e.target.value;refreshMap();};
+document.getElementById('variable-select').onchange=e=>{curVar=e.target.value; redraw();};
 
-/* ---------- City markers ---------- */
+/* ---------- CITY MARKERS ---------- */
 const cities=[
-  {n:'Atlanta, GA',c:[33.749,-84.388]},{n:'Austin, TX',c:[30.267,-97.743]},
-  {n:'Boston, MA',c:[42.36,-71.059]},{n:'Chicago, IL',c:[41.878,-87.629]},
-  {n:'Denver, CO',c:[39.739,-104.99]},{n:'Los Angeles, CA',c:[34.052,-118.244]},
+  {n:'Atlanta, GA',c:[33.749,-84.388]},{n:'Austin, TX',c:[30.267,-97.743]},{n:'Boston, MA',c:[42.360,-71.059]},
+  {n:'Denver, CO',c:[39.739,-104.990]},{n:'Los Angeles, CA',c:[34.052,-118.244]},
   {n:'Madison, WI',c:[43.073,-89.401]},{n:'Minneapolis, MN',c:[44.978,-93.265]},
   {n:'New York, NY',c:[40.713,-74.006]},{n:'Philadelphia, PA',c:[39.953,-75.165]},
   {n:'Phoenix, AZ',c:[33.448,-112.074]},{n:'Portland, OR',c:[45.505,-122.675]},
