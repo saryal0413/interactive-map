@@ -263,6 +263,8 @@ function getColor(value, variable) {
   }
 
   if (variable === 'Sidewalk_Riding_(E-Bike)') {
+    const v = canonical(value);
+    
     const colors = {
       'Can ride': '#1a9641',
       'Partial allowed': '#fdae61',
@@ -312,6 +314,10 @@ function getColor(value, variable) {
   return '#ccc';
 }
 
+function canonical(val) {
+  return (val ??'').trim().replace(/\s+/g,''). toLowerCase();
+}
+  
 function updateLegend(variable) {
   if (currentLegend) map.removeControl(currentLegend);
   currentLegend = L.control({ position: 'bottomright' });
