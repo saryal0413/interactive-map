@@ -287,6 +287,9 @@ function getColor(value, variable) {
   }
 
   if (variable === 'Age_limit') {
+    let v = canonical(value);
+    if (v === 'mode not defiined') v='regulate at local level';
+    
     const ageColors = {
       '8': '#1a9641',
       '12': '#a6d96a',
@@ -333,6 +336,11 @@ function updateLegend(variable) {
     Object.values(dataLookup).forEach(row => {
       let val = row?.[variable];
       if (!val || val === 'NA' || val === 'Mode not defined') return;
+
+      if (variable == 'Age_limit' && canonical(val) === 'mode not defined') {
+        val = 'Regulated at local level';
+      }
+      
       val = val.trim();
       const key = canonical(val);
       if (!categoriesMap.has(key)) categoriesMap.set(key, val);
