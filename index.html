@@ -2,32 +2,39 @@
 <html>
 <head>
   <title>US State Map – Micromobility Policy</title>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
     html,body{height:100%;margin:0;font-family:Arial,sans-serif;color:#142b59}
-    #map-wrapper{display:flex;flex-direction:column;height:100vh;width:95%;margin:0 auto;padding:10px;border:5px solid #ccc;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#fff}
-    .info.legend{background:#142b59;color:#fff;padding:12px 16px;font:16px/20px Arial,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;max-width:90vw}
-    .info.legend i{width:20px;height:20px;display:inline-block;margin-right:10px;margin-bottom:5px;vertical-align:middle;border-radius:3px}
+    #map-wrapper{display:flex;flex-direction:column;height:100vh;width:95%;margin:0 auto;
+                 padding:10px;border:5px solid #ccc;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#fff}
+    .info.legend{background:#142b59;color:#fff;padding:12px 16px;font:16px/20px Arial,sans-serif;
+                 box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;max-width:90vw}
+    .info.legend i{width:20px;height:20px;display:inline-block;margin-right:10px;margin-bottom:5px;
+                   vertical-align:middle;border-radius:3px}
     @media(max-width:600px){.info.legend{font:14px/18px Arial,sans-serif;padding:8px 12px;max-width:85vw}}
     .leaflet-popup-content a{color:#00539b;font-weight:bold;text-decoration:underline}
     .leaflet-popup-content a:hover{color:#ec1f2f}
-    .leaflet-tooltip.state-label{font-size:7px;font-weight:bold;color:#333;background:transparent;border:none;box-shadow:none;text-shadow:1px 1px 2px #fff;pointer-events:none}
+    .leaflet-tooltip.state-label{font-size:7px;font-weight:bold;color:#333;background:transparent;border:none;
+                                 box-shadow:none;text-shadow:1px 1px 2px #fff;pointer-events:none}
   </style>
 </head>
 
 <body>
 <div id="map-wrapper">
-  <div style="text-align:center;font-size:35px;font-weight:bold;margin-bottom:10px;">Micromobility Regulations in United States</div>
+  <div style="text-align:center;font-size:35px;font-weight:bold;margin-bottom:10px;">
+    Micromobility Regulations in United States
+  </div>
 
-  <!-- top controls -->
-  <div id="logos" style="display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;padding:10px 20px;">
+  <!-- ­­­top controls -->
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 20px;">
     <img src="logo-funder.jpg" alt="Funder Logo" style="height:80px;width:200px;object-fit:contain;padding:5px">
-    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+    <div style="display:flex;flex-wrap:wrap;gap:20px;">
       <div style="border:2px solid #ccc;border-radius:10px;padding:12px 16px;background:#fafafa;width:250px">
-        <label for="mode-select" style="font:16px Arial;font-weight:bold;margin-bottom:6px;display:block">Mode</label>
-        <select id="mode-select" style="padding:12px 16px;font-size:16px;border-radius:8px;border:1px solid #ccc;background:#f9f9f9;width:100%">
+        <label for="mode-select" style="font-size:16px;font-weight:bold;display:block;margin-bottom:6px">Mode</label>
+        <select id="mode-select" style="width:100%;padding:12px 16px;font-size:16px;border-radius:8px;
+                                        border:1px solid #ccc;background:#f9f9f9">
           <option value="E-bike">E-bike</option>
           <option value="E-scooter">E-scooter</option>
           <option value="Conventional bicycle">Conventional bicycle</option>
@@ -36,21 +43,25 @@
         </select>
       </div>
       <div style="border:2px solid #ccc;border-radius:10px;padding:12px 16px;background:#fafafa;width:250px">
-        <label for="variable-select" style="font:16px Arial;font-weight:bold;margin-bottom:6px;display:block">Variable</label>
-        <select id="variable-select" style="padding:12px 16px;font-size:16px;border-radius:8px;border:1px solid #ccc;background:#f9f9f9;width:100%"></select>
+        <label for="variable-select" style="font-size:16px;font-weight:bold;display:block;margin-bottom:6px">Variable</label>
+        <select id="variable-select" style="width:100%;padding:12px 16px;font-size:16px;border-radius:8px;
+                                            border:1px solid #ccc;background:#f9f9f9"></select>
       </div>
     </div>
     <img src="logo-UTK.png" alt="University Logo" style="height:95px;width:200px;object-fit:contain;padding:5px">
   </div>
 
   <div style="text-align:center;margin-bottom:10px;">
-    <button id="toggle-city-list" style="background:#142b59;color:#fff;padding:8px 16px;border:none;border-radius:5px;font-size:16px;cursor:pointer">Show/Hide City List</button>
+    <button id="toggle-city-list" style="background:#142b59;color:#fff;padding:8px 16px;
+                                         border:none;border-radius:5px;font-size:16px;cursor:pointer">
+      Show/Hide City List
+    </button>
   </div>
 
   <div id="city-list" style="display:none;text-align:center;margin-bottom:10px;font-size:16px;color:#142b59"></div>
   <div id="map" style="flex-grow:1;min-height:60vh"></div>
 
-  <div id="footer" style="text-align:center;padding:10px;font-size:14px;color:#555">
+  <div style="text-align:center;padding:10px;font-size:14px;color:#555">
     <div style="font-weight:bold">Created by the Team at the University of Tennessee, Knoxville</div>
     <div style="font-size:13px;color:#777;margin-top:4px">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
   </div>
@@ -61,109 +72,238 @@
 <script src="us-states.js"></script>
 
 <script>
-/* ===== VARIABLE CONFIG (unchanged) ===== */
-const modeVariables = { /* …same as before… */ };
-/* legend orders (unchanged) */
-const sidewalkOrder=[/* … */], bikeSidewalkOrder=[/* … */], ageLimitOrder=[/* … */],
-      helmetBikeOrder=[/* … */], equipmentOrder=[/* … */], accessBikeOrder=[/* … */],
-      passingDistanceOrder=['2 ft','3 ft','4 ft','6 ft','Speed-based (3 or 6 ft)','Adjacent lane','Safe distance'];
+/* ---------- configuration ---------- */
+const modeVariables={
+  'E-bike':[
+    {value:'Age_Class3_(E-Bike)',label:'Age Requirement for Class 3 E-bikes'},
+    {value:'Helmet_Grouped_(E-Bike)',label:'Helmet Requirement'},
+    {value:'Sidewalk_Riding_(E-Bike)',label:'Sidewalk Riding Restrictions'}
+  ],
+  'E-scooter':[
+    {value:'License_Req_Grouped',label:'License Requirement'},
+    {value:'Age_limit',label:'Minimum Riding Age'},
+    {value:'Helmet_Requirement',label:'Helmet Requirement'}
+  ],
+  'Conventional bicycle':[
+    {value:'Sidewalk restrictions(BIKE)',label:'Sidewalk Riding Restrictions'},
+    {value:'Helmet_Law(BIKE)',label:'Helmet Requirement'},
+    {value:'specific_equipment_requirements(BIKE)',label:'Equipment Requirements'},
+    {value:'Access(BIKE)',label:'Roadway Access'},
+    {value:'Motor_Vehicle_passing_distance(BIKE)',label:'Passing-Distance Rule'}
+  ],
+  'Moped':[],
+  'Other wheeled modes':[]
+};
 
-/* ===== MAP INIT / DATA LOAD (unchanged) ===== */
+const sidewalkOrder=['Can ride','Partial allowed','Cannot ride but can stand and park',
+                     'Cannot ride certain classes','Cannot ride'];
+const bikeSidewalkOrder=[
+  'Can ride on the sidewalks','Can ride on the sidewalks with exceptions',
+  'Cannot ride on sidewalk, unless local law permits','Cannot ride on the sidewalks'];
+const ageLimitOrder=['8','12','14','15','16','Regulated at local level','Prohibited'];
+const helmetBikeOrder=[
+  'Not required','Required for users under 12','Required for users under 14',
+  'Required for users under 15','Required for users under 16',
+  'Required for users under 17','Required for users under 18'];
+const equipmentOrder=[
+  'Front and rear lights, brakes','Front and rear lights',
+  'Lights + reflectors / seat / other','Includes serial number','Unspecified / Other'];
+const accessBikeOrder=['Fully allowed','Allowed unless signage prohibits',
+                       'Prohibited unless signage allows','Conditional or discretionary'];
+const passingDistanceOrder=[
+  '2 ft','3 ft','4 ft','6 ft','Speed-based (3 or 6 ft)','Adjacent lane','Safe distance'];
+
+/* ---------- map & data ---------- */
 const map=L.map('map').setView([37.8,-96],4);
 map.zoomControl.setPosition('bottomleft');
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
-/* CSV fetch omitted for brevity—identical to your last version */
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {attribution:'© OpenStreetMap'}).addTo(map);
 
+const sheetURL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
+let data={},geojson,currentLegend,currentMode='E-bike',currentVar='Age_Class3_(E-Bike)';
+
+fetch(sheetURL).then(r=>r.text()).then(txt=>{
+  Papa.parse(txt,{header:true}).data.forEach(row=>{
+    const st=row.State?.trim();if(st)data[st]=row;
+  });
+  geojson=L.geoJson(statesData,{style:f=>style(f,currentVar),onEachFeature:(_,l)=>bind(l)}).addTo(map);
+  geojson.eachLayer(l=>l.bindTooltip(l.feature.properties.name,{permanent:true,direction:'center',
+                           className:'state-label'}).openTooltip());
+  fillDropdown(currentMode);updateLegend(currentVar);
+});
+
+/* ---------- helpers ---------- */
 const canon=v=>(v??'').trim().replace(/\s+/g,' ').toLowerCase();
 
-/* ===== COLOR LOGIC (ALL BRANCHES RESTORED) ===== */
-function getColor(value,variable){
-  if(!value||value==='NA'||value==='Mode not defined'){
-    if(variable==='Age_limit') value='Regulated at local level'; else return '#cccccc';
+/* ---------- colour logic ---------- */
+function colour(val,variable){
+  if(!val||val==='NA'||val==='Mode not defined'){
+    if(variable==='Age_limit') val='Regulated at local level'; else return '#ccc';
   }
 
-  /* E-BIKE */
-  if(variable==='Age_Class3_(E-Bike)'){ if(value==='None') return '#ffffb2';
-    const n=parseInt(value); return !isNaN(n)&&n>=16?'#1a9641':'#fdae61'; }
+  /* E-bike */
+  if(variable==='Age_Class3_(E-Bike)'){
+    if(val==='None') return '#ffffb2';
+    const n=parseInt(val);return !isNaN(n)&&n>=16?'#1a9641':'#fdae61';
+  }
   if(variable==='Helmet_Grouped_(E-Bike)'){
-    const c={'12 or below':'#a6cee3','14 or below':'#1f78b4','15 or below':'#b2df8a','16 or below':'#33a02c',
-             '17 or below':'#fb9a99','18 or below':'#e31a1c','21 or below':'#fdbf6f',
-             'Not required':'#cab2d6','Required for all users':'#6a3d9a'};
-    return c[value]||'#ccc';
+    const h={ '12 or below':'#a6cee3','14 or below':'#1f78b4','15 or below':'#b2df8a',
+              '16 or below':'#33a02c','17 or below':'#fb9a99','18 or below':'#e31a1c',
+              '21 or below':'#fdbf6f','Not required':'#cab2d6','Required for all users':'#6a3d9a'};
+    return h[val]||'#ccc';
   }
   if(variable==='Sidewalk_Riding_(E-Bike)'){
     const c={'can ride':'#1a9641','partial allowed':'#fdae61','cannot ride certain classes':'#984ea3',
              'cannot ride':'#d73027','cannot ride but can stand and park':'#377eb8'};
-    return c[canon(value)]||'#ccc';
+    return c[canon(val)]||'#ccc';
   }
 
-  /* E-SCOOTER */
+  /* E-scooter */
   if(variable==='License_Req_Grouped'){
     const c={'DL not required':'#1a9641','DL or permit required':'#fdae61','DL required':'#d73027','prohibited':'#7570b3'};
-    return c[value]||'#ccc';
+    return c[val]||'#ccc';
   }
   if(variable==='Age_limit'){
-    let v=canon(value); if(v==='mode not defined') v='regulated at local level';
+    let v=canon(val);if(v==='mode not defined') v='regulated at local level';
     const c={'8':'#1a9641','12':'#a6d96a','14':'#fdae61','15':'#f46d43','16':'#d73027',
              'regulated at local level':'#ffffbf','prohibited':'#7570b3'};
     return c[v]||'#ccc';
   }
   if(variable==='Helmet_Requirement'){
-    const c={'Not required':'#1a9641','Under 16':'#a6d96a','Under 17':'#fdae61','Under 18':'#f46d43',
-             'Under 19':'#d73027','Riders all age':'#66c2a5','Mode prohibited':'#7570b3'};
-    return c[value]||'#ccc';
+    const c={'Not required':'#1a9641','Under 16':'#a6d96a','Under 17':'#fdae61',
+             'Under 18':'#f46d43','Under 19':'#d73027','Riders all age':'#66c2a5',
+             'Mode prohibited':'#7570b3'};
+    return c[val]||'#ccc';
   }
 
-  /* CONVENTIONAL-BIKE */
+  /* Conventional bike */
   if(variable==='Sidewalk restrictions(BIKE)'){
-    const c={'cannot ride on the sidewalks':'#d73027',
-             'can ride on the sidewalks':'#1a9641',
+    const c={'cannot ride on the sidewalks':'#d73027','can ride on the sidewalks':'#1a9641',
              'can ride on the sidewalks with exceptions':'#fdae61',
              'cannot ride on sidewalk, unless local law permits':'#377eb8'};
-    return c[canon(value)]||'#ccc';
+    return c[canon(val)]||'#ccc';
   }
   if(variable==='Helmet_Law(BIKE)'){
-    const v=canon(value);
-    if(v.startsWith('not required')) return '#1a9641';
-    if(v.includes('under 12'))       return '#d4eea2';
-    if(v.includes('under 14'))       return '#ffffb2';
-    if(v.includes('under 15'))       return '#fed976';
-    if(v.includes('under 16'))       return '#feb24c';
-    if(v.includes('under 17'))       return '#fd8d3c';
-    if(v.includes('under 18'))       return '#e31a1c';
+    const v=canon(val);
+    if(v.startsWith('not required'))   return '#1a9641';
+    if(v.includes('under 12'))         return '#d4eea2';
+    if(v.includes('under 14'))         return '#ffffb2';
+    if(v.includes('under 15'))         return '#fed976';
+    if(v.includes('under 16'))         return '#feb24c';
+    if(v.includes('under 17'))         return '#fd8d3c';
+    if(v.includes('under 18'))         return '#e31a1c';
     return '#ccc';
   }
   if(variable==='specific_equipment_requirements(BIKE)'){
-    const v=canon(value);
-    if(v.includes('serial number'))  return '#ff7f00';
-    if(v.includes('reflector')||v.includes('seat')||v.includes('bell')||v.includes('wheel')) return '#fdae61';
-    if(v.includes('front')&&v.includes('rear')&&v.includes('lights')&&v.includes('brake')) return '#1a9641';
-    if(v.includes('front')&&v.includes('rear')&&v.includes('lights')) return '#a6d96a';
+    const v=canon(val);
+    if(v.includes('serial number'))           return '#ff7f00';
+    if(v.match(/reflector|seat|bell|wheel/))  return '#fdae61';
+    if(v.includes('lights')&&v.includes('brake')) return '#1a9641';
+    if(v.includes('lights'))                  return '#a6d96a';
     return '#ccc';
   }
   if(variable==='Access(BIKE)'){
-    const v=canon(value);
-    if(v==='fully allowed') return '#1a9641';
-    if(v==='allowed unless signage prohibits') return '#fdae61';
-    if(v==='prohibited unless signage allows') return '#d73027';
-    if(v.startsWith('conditional')) return '#8c8c8c';
+    const v=canon(val);
+    if(v==='fully allowed')                        return '#1a9641';
+    if(v==='allowed unless signage prohibits')     return '#fdae61';
+    if(v==='prohibited unless signage allows')     return '#d73027';
+    if(v.startsWith('conditional'))               return '#8c8c8c';
     return '#ccc';
   }
   if(variable==='Motor_Vehicle_passing_distance(BIKE)'){
-    const v=canon(value);
-    if(v==='2 ft'||v==='2ft')                          return '#d9f0a3';
-    if(v==='3 ft'||v==='3ft')                          return '#a6d96a';
-    if(v==='4 ft'||v==='4ft')                          return '#66bd63';
-    if(v==='6 ft'||v==='6ft')                          return '#1a9641';
-    if(v==='3 ft for under 35mph, 6ft for over')       return '#fdae61'; // speed-based
-    if(v.startsWith('adjacent lane'))                  return '#fc8d59';
-    if(v.startsWith('safe'))                           return '#8c6bb1';
+    const v=canon(val);
+    if(v==='2 ft'||v==='2ft')                      return '#d9f0a3';
+    if(v==='3 ft'||v==='3ft')                      return '#a6d96a';
+    if(v==='4 ft'||v==='4ft')                      return '#66bd63';
+    if(v==='6 ft'||v==='6ft')                      return '#1a9641';
+    if(v==='3 ft for under 35mph, 6ft for over')   return '#fdae61';   // speed-based
+    if(v.startsWith('adjacent lane'))              return '#fc8d59';
+    if(v.startsWith('safe'))                       return '#8c6bb1';
     return '#ccc';
   }
   return '#ccc';
 }
 
-/* ===== REST OF SCRIPT IDENTICAL (updateLegend, popups, etc.) ===== */
+/* ---------- style / legend / pop-ups ---------- */
+function style(f,v){const raw=data[f.properties.name]?.[v];return{fillColor:colour(raw,v)||'#ccc',
+  weight:1,color:'white',fillOpacity:colour(raw,v)?0.7:0};}
+
+function bind(layer){
+  const st=layer.feature.properties.name;
+  let val=data[st]?.[currentVar]||'N/A';
+  if(currentVar==='Age_limit'&&canon(val)==='mode not defined') val='Regulated at local level';
+  if(currentVar==='Motor_Vehicle_passing_distance(BIKE)'){
+    const c=canon(val);
+    if(c==='3 ft for under 35mph, 6ft for over') val='Speed-based (3 or 6 ft)';
+    else if(c.startsWith('adjacent lane')) val='Adjacent lane';
+    else if(c.startsWith('safe')) val='Safe distance';
+  }
+  const lbl=modeVariables[currentMode].find(x=>x.value===currentVar)?.label||currentVar;
+  layer.bindPopup(`<b>${st}</b><br><strong>Mode:</strong> ${currentMode}<br>
+                   <strong>Variable:</strong> ${lbl}<br><strong>Category:</strong> ${val}`);
+}
+
+function updateLegend(v){
+  if(currentLegend) map.removeControl(currentLegend);
+  currentLegend=L.control({position:'bottomright'});
+  currentLegend.onAdd=()=>{
+    const div=L.DomUtil.create('div','info legend'),mapVals=new Map();
+    Object.values(data).forEach(r=>{
+      let val=r?.[v]; if(!val||val==='NA') return;
+      if(v==='Age_limit'&&canon(val)==='mode not defined') val='Regulated at local level';
+      if(v==='Motor_Vehicle_passing_distance(BIKE)'){
+        const c=canon(val);
+        if(c==='3 ft'||c==='3ft') val='3 ft';
+        else if(c==='3 ft for under 35mph, 6ft for over') val='Speed-based (3 or 6 ft)';
+        else if(c.startsWith('adjacent lane')) val='Adjacent lane';
+        else if(c.startsWith('safe')) val='Safe distance';
+      }
+      mapVals.set(canon(val),val.trim());
+    });
+    const order={
+      'Sidewalk_Riding_(E-Bike)':sidewalkOrder,
+      'Sidewalk restrictions(BIKE)':bikeSidewalkOrder,
+      'Age_limit':ageLimitOrder,
+      'Helmet_Law(BIKE)':helmetBikeOrder,
+      'specific_equipment_requirements(BIKE)':equipmentOrder,
+      'Access(BIKE)':accessBikeOrder,
+      'Motor_Vehicle_passing_distance(BIKE)':passingDistanceOrder
+    }[v]||[];
+    const list=order.length?order.filter(l=>mapVals.has(canon(l))):Array.from(mapVals.values()).sort();
+    div.innerHTML=list.map(c=>`<i style="background:${colour(c,v)}"></i> ${c}`).join('<br>');
+    return div;
+  };
+  currentLegend.addTo(map);
+}
+
+function fillDropdown(mode){
+  const sel=document.getElementById('variable-select');
+  sel.innerHTML=''; const vars=modeVariables[mode];
+  if(!vars.length){sel.innerHTML='<option>No variables</option>';sel.disabled=true;return;}
+  vars.forEach(x=>{
+    const o=document.createElement('option');o.value=x.value;o.textContent=x.label;sel.appendChild(o);
+  });
+  sel.disabled=false;currentVar=vars[0].value;
+  geojson.setStyle(f=>style(f,currentVar));updateLegend(currentVar);geojson.eachLayer(bind);
+}
+
+/* ---------- listeners ---------- */
+document.getElementById('mode-select').addEventListener('change',e=>{
+  currentMode=e.target.value;fillDropdown(currentMode);
+});
+document.getElementById('variable-select').addEventListener('change',e=>{
+  currentVar=e.target.value;
+  geojson.setStyle(f=>style(f,currentVar));updateLegend(currentVar);geojson.eachLayer(bind);
+});
+
+/* ---------- city markers (minimal demo) ---------- */
+const cities=[{name:'Atlanta, GA',coords:[33.749,-84.388]},{name:'Washington, D.C.',coords:[38.9072,-77.0369]}];
+const btn=document.getElementById('toggle-city-list');let on=true,markers=[];
+cities.forEach(c=>markers.push(L.marker(c.coords).addTo(map).bindPopup(`<strong>${c.name}</strong>`)));
+btn.addEventListener('click',()=>{
+  on=!on;markers.forEach(m=>on?m.addTo(map):map.removeLayer(m));
+  document.getElementById('city-list').style.display=on?'none':'block';
+});
 </script>
 </body>
 </html>
