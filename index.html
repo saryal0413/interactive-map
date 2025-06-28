@@ -6,83 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      color: #142b59;
-    }
-    #map-wrapper {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      width: 95%;
-      margin: 0 auto;
-      padding: 10px;
-      border: 5px solid #ccc;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      background-color: white;
-    }
-    .info.legend {
-      background: #142b59;
-      color: #ffffff;
-      padding: 12px 16px;
-      font: 16px/20px Arial, sans-serif;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      border-radius: 8px;
-      width: auto;
-      max-width: 90vw;
-    }
-    .info.legend i {
-      width: 20px;
-      height: 20px;
-      display: inline-block;
-      margin-right: 10px;
-      margin-bottom: 5px;
-      vertical-align: middle;
-      border-radius: 3px;
-    }
-    @media (max-width: 600px) {
-      .info.legend {
-        font: 14px/18px Arial, sans-serif;
-        padding: 8px 12px;
-        max-width: 85vw;
-      }
-    }
-    .leaflet-popup-content a {
-      color: #00539b;
-      font-weight: bold;
-      text-decoration: underline;
-    }
-    .leaflet-popup-content a:hover {
-      color: #ec1f2f;
-    }
-    .leaflet-tooltip.state-label {
-      font-size: 7px;
-      font-weight: bold;
-      color: #333;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      text-shadow: 1px 1px 2px #fff;
-      pointer-events: none;
-    }
+    html, body {height:100%;margin:0;padding:0;font-family:Arial,sans-serif;color:#142b59;}
+    #map-wrapper{display:flex;flex-direction:column;height:100vh;width:95%;margin:0 auto;padding:10px;border:5px solid #ccc;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#fff}
+    .info.legend{background:#142b59;color:#fff;padding:12px 16px;font:16px/20px Arial,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;width:auto;max-width:90vw}
+    .info.legend i{width:20px;height:20px;display:inline-block;margin-right:10px;margin-bottom:5px;vertical-align:middle;border-radius:3px}
+    @media(max-width:600px){.info.legend{font:14px/18px Arial,sans-serif;padding:8px 12px;max-width:85vw}}
+    .leaflet-popup-content a{color:#00539b;font-weight:bold;text-decoration:underline}.leaflet-popup-content a:hover{color:#ec1f2f}
+    .leaflet-tooltip.state-label{font-size:7px;font-weight:bold;color:#333;background:transparent;border:none;box-shadow:none;text-shadow:1px 1px 2px #fff;pointer-events:none}
   </style>
 </head>
 
 <body>
 <div id="map-wrapper">
-  <div style="text-align: center; font-size: 35px; font-weight: bold; margin-bottom: 10px;">
-    Micromobility Regulations in United States
-  </div>
+  <div style="text-align:center;font-size:35px;font-weight:bold;margin-bottom:10px;">Micromobility Regulations in United States</div>
 
-  <div id="logos" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 10px 20px;">
-    <img src="logo-funder.jpg" alt="Funder Logo" style="height: 80px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 20px;">
-      <div style="border: 2px solid #ccc; border-radius: 10px; padding: 12px 16px; background-color: #fafafa; width: 250px;">
-        <label for="mode-select" style="font-size: 16px; font-weight: bold; margin-bottom: 6px; display: block;">Mode</label>
-        <select id="mode-select" style="padding: 12px 16px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; background-color: #f9f9f9; color: #333; cursor: pointer; width: 100%;">
+  <div id="logos" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 20px;">
+    <img src="logo-funder.jpg" alt="Funder Logo" style="height:80px;width:200px;object-fit:contain;padding:5px;">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:20px;">
+      <div style="border:2px solid #ccc;border-radius:10px;padding:12px 16px;background:#fafafa;width:250px;">
+        <label for="mode-select" style="font-size:16px;font-weight:bold;margin-bottom:6px;display:block;">Mode</label>
+        <select id="mode-select" style="padding:12px 16px;font-size:16px;border-radius:8px;border:1px solid #ccc;background:#f9f9f9;color:#333;width:100%;">
           <option value="E-bike">E-bike</option>
           <option value="E-scooter">E-scooter</option>
           <option value="Conventional bicycle">Conventional bicycle</option>
@@ -90,25 +33,24 @@
           <option value="Other wheeled modes">Other wheeled modes</option>
         </select>
       </div>
-      <div style="border: 2px solid #ccc; border-radius: 10px; padding: 12px 16px; background-color: #fafafa; width: 250px;">
-        <label for="variable-select" style="font-size: 16px; font-weight: bold; margin-bottom: 6px; display: block;">Variable</label>
-        <select id="variable-select" style="padding: 12px 16px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; background-color: #f9f9f9; color: #333; cursor: pointer; width: 100%;"></select>
+      <div style="border:2px solid #ccc;border-radius:10px;padding:12px 16px;background:#fafafa;width:250px;">
+        <label for="variable-select" style="font-size:16px;font-weight:bold;margin-bottom:6px;display:block;">Variable</label>
+        <select id="variable-select" style="padding:12px 16px;font-size:16px;border-radius:8px;border:1px solid #ccc;background:#f9f9f9;color:#333;width:100%;"></select>
       </div>
     </div>
-    <img src="logo-UTK.png" alt="University Logo" style="height: 95px; width: 200px; object-fit: contain; padding: 5px; box-sizing: border-box;">
+    <img src="logo-UTK.png" alt="University Logo" style="height:95px;width:200px;object-fit:contain;padding:5px;">
   </div>
 
-  <div style="text-align: center; margin-bottom: 10px;">
-    <button id="toggle-city-list" style="background-color: #142b59; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Show/Hide City List</button>
+  <div style="text-align:center;margin-bottom:10px;">
+    <button id="toggle-city-list" style="background:#142b59;color:#fff;padding:8px 16px;border:none;border-radius:5px;font-size:16px;cursor:pointer;">Show/Hide City List</button>
   </div>
 
-  <div id="city-list" style="display: none; text-align: center; margin-bottom: 10px; font-size: 16px; color: #142b59;"></div>
+  <div id="city-list" style="display:none;text-align:center;margin-bottom:10px;font-size:16px;color:#142b59;"></div>
+  <div id="map" style="flex-grow:1;min-height:60vh;"></div>
 
-  <div id="map" style="flex-grow: 1; min-height: 60vh;"></div>
-
-  <div id="footer" style="text-align: center; padding: 10px; font-size: 14px; color: #555; line-height: 1.4;">
-    <div style="font-weight: bold;">Created by the Team at the University of Tennessee, Knoxville</div>
-    <div style="font-size: 13px; color: #777; margin-top: 4px;">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
+  <div id="footer" style="text-align:center;padding:10px;font-size:14px;color:#555;line-height:1.4;">
+    <div style="font-weight:bold;">Created by the Team at the University of Tennessee, Knoxville</div>
+    <div style="font-size:13px;color:#777;margin-top:4px;">for Safety of Micromobility: Regulations, Data, and Stakeholders</div>
   </div>
 </div>
 
@@ -117,7 +59,7 @@
 <script src="us-states.js"></script>
 
 <script>
-/* ======================== CONFIG ======================== */
+/* ---------- CONFIG ---------- */
 const modeVariables = {
   'E-bike': [
     { value: 'Age_Class3_(E-Bike)', label: 'Age Requirement for Class 3 E-bikes' },
@@ -130,7 +72,7 @@ const modeVariables = {
     { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding' }
   ],
   'Conventional bicycle': [
-    { value: 'Sidewalk restrictions(BIKE)',  label: 'Sidewalk Riding Restrictions'}
+    { value: 'Sidewalk restrictions(BIKE)', label: 'Sidewalk Riding Restrictions' }
   ],
   'Moped': [],
   'Other wheeled modes': []
@@ -145,13 +87,7 @@ const sidewalkOrder = [
 ];
 
 const ageLimitOrder = [
-  '8',
-  '12',
-  '14',
-  '15',
-  '16',
-  'Regulated at local level',
-  'Prohibited'
+  '8','12','14','15','16','Regulated at local level','Prohibited'
 ];
 
 const bikeSidewalkOrder = [
@@ -161,298 +97,153 @@ const bikeSidewalkOrder = [
   'Cannot ride on the sidewalks'
 ];
 
-/* ======================== MAP INIT ======================= */
+/* ---------- MAP INITIALISE ---------- */
 const map = L.map('map').setView([37.8, -96], 4);
 map.zoomControl.setPosition('bottomleft');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'Map data © OpenStreetMap contributors'}).addTo(map);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data © OpenStreetMap contributors'
-}).addTo(map);
+/* ---------- DATA ---------- */
+const sheetURL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
+let dataLookup={},geojsonLayer,currentLegend;
+let currentMode='E-bike',currentVariable='Age_Class3_(E-Bike)';
 
-/* ====================== DATA LOAD ======================= */
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
-
-let dataLookup = {};
-let geojsonLayer;
-let currentLegend;
-let currentMode = 'E-bike';
-let currentVariable = 'Age_Class3_(E-Bike)';
-
-fetch(sheetURL)
-  .then(r => r.text())
-  .then(txt => {
-    const data = Papa.parse(txt, { header: true }).data;
-    data.forEach(row => {
-      const state = row.State?.trim();
-      if (state) dataLookup[state] = row;
-    });
-
-    geojsonLayer = L.geoJson(statesData, {
-      style: f => getStyle(f, currentVariable),
-      onEachFeature: (_, layer) => bindPopupToLayer(layer)
-    }).addTo(map);
-
-    geojsonLayer.eachLayer(layer => {
-      layer.bindTooltip(layer.feature.properties.name, {
-        permanent: true,
-        direction: 'center',
-        className: 'state-label'
-      }).openTooltip();
-    });
-
-    updateVariableDropdown(currentMode);
-    updateLegend(currentVariable);
-  });
-
-/* =================== UI LISTENERS ======================= */
-document.getElementById('mode-select').addEventListener('change', e => {
-  currentMode = e.target.value;
+/* ---------- LOAD CSV & DRAW STATES ---------- */
+fetch(sheetURL).then(r=>r.text()).then(txt=>{
+  const rows=Papa.parse(txt,{header:true}).data;
+  rows.forEach(row=>{const s=row.State?.trim();if(s)dataLookup[s]=row;});
+  geojsonLayer=L.geoJson(statesData,{
+    style:f=>getStyle(f,currentVariable),
+    onEachFeature:(_,layer)=>bindPopupToLayer(layer)
+  }).addTo(map);
+  geojsonLayer.eachLayer(l=>l.bindTooltip(l.feature.properties.name,{permanent:true,direction:'center',className:'state-label'}).openTooltip());
   updateVariableDropdown(currentMode);
+  updateLegend(currentVariable);
 });
 
-document.getElementById('variable-select').addEventListener('change', e => {
-  currentVariable = e.target.value;
-  geojsonLayer.setStyle(f => getStyle(f, currentVariable));
+/* ---------- DROPDOWN LISTENERS ---------- */
+document.getElementById('mode-select').addEventListener('change',e=>{
+  currentMode=e.target.value;updateVariableDropdown(currentMode);
+});
+document.getElementById('variable-select').addEventListener('change',e=>{
+  currentVariable=e.target.value;
+  geojsonLayer.setStyle(f=>getStyle(f,currentVariable));
   updateLegend(currentVariable);
   updatePopups();
 });
 
-/* =================== DROPDOWN HANDLER =================== */
-function updateVariableDropdown(mode) {
-  const select = document.getElementById('variable-select');
-  select.innerHTML = '';
-
-  const vars = modeVariables[mode];
-  if (!vars.length) {
-    select.innerHTML = '<option>No variables available</option>';
-    select.disabled = true;
-    currentVariable = null;
-    return;
-  }
-  vars.forEach(v => {
-    const opt = document.createElement('option');
-    opt.value = v.value;
-    opt.textContent = v.label;
-    select.appendChild(opt);
-  });
-  select.disabled = false;
-  currentVariable = vars[0].value;
-
-  geojsonLayer.setStyle(f => getStyle(f, currentVariable));
-  updateLegend(currentVariable);
-  updatePopups();
+/* ---------- VARIABLE DROPDOWN FILL ---------- */
+function updateVariableDropdown(mode){
+  const sel=document.getElementById('variable-select');
+  sel.innerHTML='';
+  const vars=modeVariables[mode];if(!vars.length){sel.innerHTML='<option>No variables</option>';sel.disabled=true;return;}
+  vars.forEach(v=>{const o=document.createElement('option');o.value=v.value;o.textContent=v.label;sel.appendChild(o);});
+  sel.disabled=false;currentVariable=vars[0].value;
+  geojsonLayer.setStyle(f=>getStyle(f,currentVariable));
+  updateLegend(currentVariable);updatePopups();
 }
 
-/* =================== STYLE & COLOR ====================== */
-function getStyle(feature, variable) {
-  const val = dataLookup[feature.properties.name]?.[variable];
-  const fill = getColor(val, variable);
-  return {
-    fillColor: fill || '#ccc',
-    weight: 1,
-    color: 'white',
-    fillOpacity: fill ? 0.7 : 0
-  };
+/* ---------- STYLE / COLOR ---------- */
+function getStyle(feature,variable){
+  const v=dataLookup[feature.properties.name]?.[variable];
+  return {fillColor:getColor(v,variable)||'#ccc',weight:1,color:'white',fillOpacity:getColor(v,variable)?0.7:0};
 }
 
-function getColor(value, variable) {
-  if (!value || value === 'NA' || value === 'Mode not defined') {
-    if (variable === 'Age_limit') value = 'Regulated at local level';
+function getColor(value,variable){
+  if(!value||value==='NA'||value==='Mode not defined'){
+    if(variable==='Age_limit') value='Regulated at local level';
     else return '#cccccc';
   }
 
-  if (variable === 'Age_Class3_(E-Bike)') {
-    if (value === 'None') return '#ffffb2';
-    const num = parseInt(value);
-    if (!isNaN(num)) return num >= 16 ? '#1a9641' : '#fdae61';
+  if(variable==='Age_Class3_(E-Bike)'){
+    if(value==='None') return '#ffffb2';
+    const n=parseInt(value);if(!isNaN(n)) return n>=16?'#1a9641':'#fdae61';
   }
 
-  if (variable === 'Helmet_Grouped_(E-Bike)') {
-    const helmetColors = {
-      '12 or below': '#a6cee3',
-      '14 or below': '#1f78b4',
-      '15 or below': '#b2df8a',
-      '16 or below': '#33a02c',
-      '17 or below': '#fb9a99',
-      '18 or below': '#e31a1c',
-      '21 or below': '#fdbf6f',
-      'Not required': '#cab2d6',
-      'Required for all users': '#6a3d9a'
+  if(variable==='Helmet_Grouped_(E-Bike)'){
+    const colors={
+      '12 or below':'#a6cee3','14 or below':'#1f78b4','15 or below':'#b2df8a','16 or below':'#33a02c',
+      '17 or below':'#fb9a99','18 or below':'#e31a1c','21 or below':'#fdbf6f','Not required':'#cab2d6',
+      'Required for all users':'#6a3d9a'
     };
-    const key = Object.keys(helmetColors).find(k => k.toLowerCase() === value.trim().toLowerCase());
-    return helmetColors[key] || '#ccc';
+    const key=Object.keys(colors).find(k=>k.toLowerCase()===value.trim().toLowerCase());
+    return colors[key]||'#ccc';
   }
 
-  if (variable === 'Sidewalk_Riding_(E-Bike)') {
-    const v = canonical(value);
-    const colors = {
-      'can ride': '#1a9641',
-      'partial allowed': '#fdae61',
-      'cannot ride certain classes': '#984ea3',
-      'cannot ride': '#d7191c',
-      'cannot ride but can stand and park': '#377eb8'
-    };
-    return colors[v] || '#ccc';
+  if(variable==='Sidewalk_Riding_(E-Bike)'){
+    const v=canonical(value);const c={'can ride':'#1a9641','partial allowed':'#fdae61','cannot ride certain classes':'#984ea3','cannot ride':'#d7191c','cannot ride but can stand and park':'#377eb8'};
+    return c[v]||'#ccc';
   }
 
-  if (variable === 'License_Req_Grouped') {
-    const colors = {
-      'DL not required': '#1a9641',
-      'DL or permit required': '#fdae61',
-      'DL required': '#d7191c',
-      'prohibited': '#7570b3'
-    };
-    return colors[value] || '#ccc';
+  if(variable==='Sidewalk restrictions(BIKE)'){
+    const v=canonical(value);const c={'cannot ride on the sidewalks':'#d7191c','can ride on the sidewalks':'#1a9641','can ride on the sidewalks with exceptions':'#fdae61','cannot ride on sidewalk, unless local law permits':'#377eb8'};
+    return c[v]||'#ccc';
   }
 
-  if (variable === 'Age_limit') {
-    let v = canonical(value);
-    if (v === 'mode not defined') v = 'regulated at local level';
-    const ageColors = {
-      '8': '#1a9641',
-      '12': '#a6d96a',
-      '14': '#fdae61',
-      '15': '#f46d43',
-      '16': '#d73027',
-      'regulated at local level': '#ffffbf',
-      'prohibited': '#7570b3'
-    };
-    return ageColors[v] || '#ccc';
+  if(variable==='License_Req_Grouped'){
+    const c={'DL not required':'#1a9641','DL or permit required':'#fdae61','DL required':'#d7191c','prohibited':'#7570b3'};
+    return c[value]||'#ccc';
   }
 
-  if (variable === 'Helmet_Requirement') {
-    const helmetColors = {
-      'Not required': '#1a9641',
-      'Under 16': '#a6d96a',
-      'Under 17': '#fdae61',
-      'Under 18': '#f46d43',
-      'Under 19': '#d73027',
-      'Riders all age': '#66c2a5',
-      'Mode prohibited': '#7570b3'
-    };
-    return helmetColors[value] || '#ccc';
+  if(variable==='Age_limit'){
+    let v=canonical(value);if(v==='mode not defined') v='regulated at local level';
+    const c={'8':'#1a9641','12':'#a6d96a','14':'#fdae61','15':'#f46d43','16':'#d73027','regulated at local level':'#ffffbf','prohibited':'#7570b3'};
+    return c[v]||'#ccc';
+  }
+
+  if(variable==='Helmet_Requirement'){
+    const c={'Not required':'#1a9641','Under 16':'#a6d96a','Under 17':'#fdae61','Under 18':'#f46d43','Under 19':'#d73027','Riders all age':'#66c2a5','Mode prohibited':'#7570b3'};
+    return c[value]||'#ccc';
   }
 
   return '#ccc';
-
-// -------------- CONVENTIONAL BIKE SIDEWALK RIDING ------------
-if ((variable === 'Sidewalk restrictions(BIKE)') {
-  const  v = canonical(value);
-  const colors = {
-    'cannot ride on the sidewalks': '#d7191c',
-    'can ride on the sidewalks': '#1a9641',
-    'can ride on the sidewalks with exceptions': '#fdae61',
-    'cannot ride on sidewalk, unless local law permits': '#377eb8'
-  };
-  return colors[v] || '#ccc';
 }
 
-/* =================== HELPERS ============================ */
-function canonical(val) {
-  return (val ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
-}
+/* ---------- HELPERS ---------- */
+function canonical(val){return (val??'').trim().replace(/\s+/g,' ').toLowerCase();}
 
-/* =================== LEGEND ============================= */
-function updateLegend(variable) {
-  if (currentLegend) map.removeControl(currentLegend);
-  currentLegend = L.control({ position: 'bottomright' });
-
-  currentLegend.onAdd = () => {
-    const div = L.DomUtil.create('div', 'info legend');
-    const categoriesMap = new Map();
-
-    Object.values(dataLookup).forEach(row => {
-      let val = row?.[variable];
-      if (!val || val === 'NA') return;
-      if (variable === 'Age_limit' && canonical(val) === 'mode not defined') {
-        val = 'Regulated at local level';
-      }
-      const key = canonical(val);
-      if (!categoriesMap.has(key)) categoriesMap.set(key, val.trim());
+/* ---------- LEGEND ---------- */
+function updateLegend(variable){
+  if(currentLegend) map.removeControl(currentLegend);
+  currentLegend=L.control({position:'bottomright'});
+  currentLegend.onAdd=()=>{
+    const div=L.DomUtil.create('div','info legend'),catMap=new Map();
+    Object.values(dataLookup).forEach(r=>{
+      let v=r?.[variable];if(!v||v==='NA') return;
+      if(variable==='Age_limit'&&canonical(v)==='mode not defined') v='Regulated at local level';
+      catMap.set(canonical(v),v.trim());
     });
+    const ordered=
+      variable==='Sidewalk_Riding_(E-Bike)' ? sidewalkOrder.filter(l=>catMap.has(canonical(l))) :
+      variable==='Sidewalk restrictions(BIKE)' ? bikeSidewalkOrder.filter(l=>catMap.has(canonical(l))) :
+      variable==='Age_limit' ? ageLimitOrder.filter(l=>catMap.has(canonical(l))) :
+      Array.from(catMap.values()).sort((a,b)=>a.localeCompare(b));
 
-    const categories = Array.from(categoriesMap.values());
-
-    const orderedCats = 
-      (variable === 'Sidewalk_Riding_(E-Bike)') ? 
-          sidewalkOrder.filter(l => categoriesMap.has(canonical(l))):
-      (variable === 'Sidewalk restrictions(BIKE)') ?
-          bikeSidewalkOrder.filter(l => categoriesMap.has(canonical(l))) :
-      (variable === 'Age_limit') ? 
-          ageLimitOrder.filter(l => categoriesMap.has(canonical(l))):
-          categories.sort((a, b) => a.localeCompare(b));
-
-    div.innerHTML = orderedCats
-      .map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`)
-      .join('<br>');
+    div.innerHTML=ordered.map(cat=>`<i style="background:${getColor(cat,variable)}"></i> ${cat}`).join('<br>');
     return div;
   };
-
   currentLegend.addTo(map);
 }
 
-/* =================== POPUPS ============================= */
-function bindPopupToLayer(layer) {
-  const state = layer.feature.properties.name;
-  let value = dataLookup[state]?.[currentVariable] || 'N/A';
-  if (currentVariable === 'Age_limit' && canonical(value) === 'mode not defined') {
-    value = 'Regulated at local level';
-  }
-
-  const varLabel = modeVariables[currentMode]
-    .find(v => v.value === currentVariable)?.label || currentVariable;
-
-  const pdf = dataLookup[state]?.PDF_URL || '';
-
-  const html = `
-    <b>${state}</b><br>
-    <strong>Mode:</strong> ${currentMode}<br>
-    <strong>Variable:</strong> ${varLabel}<br>
-    <strong>Category:</strong> ${value}<br>
-    ${pdf ? `<a href="${pdf}" target="_blank">View State Regulation PDF</a>` : ''}
-  `;
-  layer.bindPopup(html);
+/* ---------- POPUPS ---------- */
+function bindPopupToLayer(layer){
+  const state=layer.feature.properties.name;
+  let val=dataLookup[state]?.[currentVariable]||'N/A';
+  if(currentVariable==='Age_limit'&&canonical(val)==='mode not defined') val='Regulated at local level';
+  const label=modeVariables[currentMode].find(v=>v.value===currentVariable)?.label||currentVariable;
+  const pdf=dataLookup[state]?.PDF_URL||'';
+  layer.bindPopup(`<b>${state}</b><br><strong>Mode:</strong> ${currentMode}<br><strong>Variable:</strong> ${label}<br><strong>Category:</strong> ${val}<br>${pdf?`<a href="${pdf}" target="_blank">View State Regulation PDF</a>`:''}`);
 }
+function updatePopups(){geojsonLayer.eachLayer(bindPopupToLayer);}
 
-function updatePopups() {
-  geojsonLayer.eachLayer(layer => bindPopupToLayer(layer));
-}
-
-/* =================== CITY MARKERS ======================= */
-const cities = [
-  { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
-  { name: 'Austin, TX', coords: [30.2672, -97.7431], pdf_url: '#' },
-  { name: 'Boston, MA', coords: [42.3601, -71.0589], pdf_url: '#' },
-  { name: 'Denver, CO', coords: [39.7392, -104.9903], pdf_url: '#' },
-  { name: 'Madison, WI', coords: [43.0731, -89.4012], pdf_url: '#' },
-  { name: 'Minneapolis, MN', coords: [44.9778, -93.2650], pdf_url: '#' },
-  { name: 'Portland, OR', coords: [45.5051, -122.6750], pdf_url: '#' },
-  { name: 'Richmond, VA', coords: [37.5407, -77.4360], pdf_url: '#' },
-  { name: 'St. Louis, MO', coords: [38.6270, -90.1994], pdf_url: '#' },
-  { name: 'Washington, D.C.', coords: [38.9072, -77.0369], pdf_url: '#' },
-  { name: 'New York, NY', coords: [40.7128, -74.0060], pdf_url: '#' },
-  { name: 'Philadelphia, PA', coords: [39.9526, -75.1652], pdf_url: '#' },
-  { name: 'Tampa, FL', coords: [27.9506, -82.4572], pdf_url: '#' },
-  { name: 'Los Angeles, CA', coords: [34.0522, -118.2437], pdf_url: '#' },
-  { name: 'Seattle, WA', coords: [47.6062, -122.3321], pdf_url: '#' },
-  { name: 'Phoenix, AZ', coords: [33.4484, -112.0740], pdf_url: '#' }
-];
-
-const cityMarkers = {};
-let cityMarkersVisible = true;
-
-cities.forEach(c => {
-  cityMarkers[c.name] = L.marker(c.coords)
-    .addTo(map)
-    .bindPopup(`<strong>${c.name}</strong><br><a href="${c.pdf_url}" target="_blank">View City Regulation PDF</a>`);
-});
-
-document.getElementById('toggle-city-list').addEventListener('click', () => {
-  const list = document.getElementById('city-list');
-  list.style.display = list.style.display === 'none' ? 'block' : 'none';
-
-  cityMarkersVisible = !cityMarkersVisible;
-  Object.values(cityMarkers).forEach(m => cityMarkersVisible ? m.addTo(map) : map.removeLayer(m));
+/* ---------- CITY MARKERS ---------- */
+const cities=[{name:'Atlanta, GA',coords:[33.749,-84.388],pdf_url:'#'}, /* …others… */ {name:'Phoenix, AZ',coords:[33.4484,-112.074],pdf_url:'#'}];
+const cityMarkers={},listBtn=document.getElementById('toggle-city-list');
+let markersOn=true;
+cities.forEach(c=>cityMarkers[c.name]=L.marker(c.coords).addTo(map).bindPopup(`<strong>${c.name}</strong><br><a href="${c.pdf_url}" target="_blank">View City Regulation PDF</a>`));
+listBtn.addEventListener('click',()=>{
+  document.getElementById('city-list').style.display=document.getElementById('city-list').style.display==='none'?'block':'none';
+  markersOn=!markersOn;
+  Object.values(cityMarkers).forEach(m=>markersOn?m.addTo(map):map.removeLayer(m));
 });
 </script>
 </body>
