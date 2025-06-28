@@ -129,7 +129,9 @@ const modeVariables = {
     { value: 'Age_limit', label: 'Minimum Riding Age' },
     { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding' }
   ],
-  'Conventional bicycle': [],
+  'Conventional bicycle': [
+    { value: 'Sidewalk restrictions(BIKE)',  label: 'Sidewalk Riding Restrictions'}
+  ],
   'Moped': [],
   'Other wheeled modes': []
 };
@@ -150,6 +152,13 @@ const ageLimitOrder = [
   '16',
   'Regulated at local level',
   'Prohibited'
+];
+
+const bikeSidewalkOrder = [
+  'Can ride on the sidewalks',
+  'Can ride on the sidewalks with exceptions',
+  'Cannot ride on sidewalk, unless local law permits',
+  'Cannot ride on the sidewalks'
 ];
 
 /* ======================== MAP INIT ======================= */
@@ -325,6 +334,17 @@ function getColor(value, variable) {
   }
 
   return '#ccc';
+
+// -------------- CONVENTIONAL BIKE SIDEWALK RIDING ------------
+if ((variable === 'Sidewalk restrictions(BIKE)') {
+  const  v = canonical(value);
+  const colors = {
+    'cannot ride on the sidewalks': '#d7191c',
+    'can ride on the sidewalks': '#1a9641',
+    'can ride on the sidewalks with exceptions': '#fdae61',
+    'cannot ride on sidewalk, unless local law permits': '#377eb8'
+  };
+  return colors[v] || '#ccc';
 }
 
 /* =================== HELPERS ============================ */
@@ -353,11 +373,14 @@ function updateLegend(variable) {
 
     const categories = Array.from(categoriesMap.values());
 
-    const orderedCats = (variable === 'Sidewalk_Riding_(E-Bike)')
-      ? sidewalkOrder.filter(l => categoriesMap.has(canonical(l)))
-      : (variable === 'Age_limit')
-        ? ageLimitOrder.filter(l => categoriesMap.has(canonical(l)))
-        : categories.sort((a, b) => a.localeCompare(b));
+    const orderedCats = 
+      (variable === 'Sidewalk_Riding_(E-Bike)') ? 
+          sidewalkOrder.filter(l => categoriesMap.has(canonical(l))):
+      (variable === 'Sidewalk restrictions(BIKE)') ?
+          bikeSidewalkOrder.filter(l => categoriesMap.has(canonical(l))) :
+      (variable === 'Age_limit') ? 
+          ageLimitOrder.filter(l => categoriesMap.has(canonical(l))):
+          categories.sort((a, b) => a.localeCompare(b));
 
     div.innerHTML = orderedCats
       .map(cat => `<i style="background:${getColor(cat, variable)}"></i> ${cat}`)
