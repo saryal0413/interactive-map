@@ -8,7 +8,7 @@
   <style>
     html, body {height:100%;margin:0;padding:0;font-family:Arial,sans-serif;color:#142b59;}
     #map-wrapper{display:flex;flex-direction:column;height:100vh;width:95%;margin:0 auto;padding:10px;border:5px solid #ccc;box-shadow:0 4px 10px rgba(0,0,0,.3);background:#fff}
-    .info.legend{background:#142b59;color:#fff;padding:12px 16px;font:16px/20px Arial,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;width:auto;max-width:90vw}
+    .info.legend{background:#142b59;color:#fff;padding:12px 16px;font:16px/20px Arial,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;max-width:90vw}
     .info.legend i{width:20px;height:20px;display:inline-block;margin-right:10px;margin-bottom:5px;vertical-align:middle;border-radius:3px}
     @media(max-width:600px){.info.legend{font:14px/18px Arial,sans-serif;padding:8px 12px;max-width:85vw}}
     .leaflet-popup-content a{color:#00539b;font-weight:bold;text-decoration:underline}.leaflet-popup-content a:hover{color:#ec1f2f}
@@ -20,6 +20,7 @@
 <div id="map-wrapper">
   <div style="text-align:center;font-size:35px;font-weight:bold;margin-bottom:10px;">Micromobility Regulations in United States</div>
 
+  <!----- top bar ----->
   <div id="logos" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 20px;">
     <img src="logo-funder.jpg" alt="Funder Logo" style="height:80px;width:200px;object-fit:contain;padding:5px;">
     <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:20px;">
@@ -72,12 +73,17 @@ const modeVariables = {
     { value: 'Helmet_Requirement', label: 'Helmet Requirement for Riding' }
   ],
   'Conventional bicycle': [
-    { value: 'Sidewalk restrictions(BIKE)', label: 'Sidewalk Riding Restrictions' }
+    { value: 'Sidewalk restrictions(BIKE)',                 label: 'Sidewalk Riding Restrictions' },
+    { value: 'Helmet_Law(BIKE)',                            label: 'Helmet Requirement' },
+    { value: 'specific_equipment_requirements(BIKE)',       label: 'Equipment Requirements' },
+    { value: 'Access(BIKE)',                                label: 'Roadway Access' },
+    { value: 'Motor_Vehicle_passing_distance(BIKE)',        label: 'Passing-Distance Rule' }
   ],
   'Moped': [],
   'Other wheeled modes': []
 };
 
+/* ----- fixed legend orders ----- */
 const sidewalkOrder = [
   'Can ride',
   'Partial allowed',
@@ -85,138 +91,199 @@ const sidewalkOrder = [
   'Cannot ride certain classes',
   'Cannot ride'
 ];
-
-const ageLimitOrder = [
-  '8','12','14','15','16','Regulated at local level','Prohibited'
-];
-
 const bikeSidewalkOrder = [
   'Can ride on the sidewalks',
   'Can ride on the sidewalks with exceptions',
   'Cannot ride on sidewalk, unless local law permits',
   'Cannot ride on the sidewalks'
 ];
+const ageLimitOrder = ['8','12','14','15','16','Regulated at local level','Prohibited'];
+const helmetBikeOrder = [
+  'Not required',
+  'Required for users under 12',
+  'Required for users under 14',
+  'Required for users under 15',
+  'Required for users under 16',
+  'Required for users under 17',
+  'Required for users under 18'
+];
+const equipmentOrder = [
+  'Front and rear lights, brakes',
+  'Front and rear lights',
+  'Lights + reflectors / seat / other',
+  'Includes serial number',
+  'Unspecified / Other'
+];
+const accessBikeOrder = [
+  'Fully allowed',
+  'Allowed unless signage prohibits',
+  'Prohibited unless signage allows',
+  'Conditional or discretionary'
+];
+const passingDistanceOrder = [
+  '2 ft',
+  '3 ft or adjacent lane',
+  '4 ft',
+  '6 ft',
+  'Speed-based (3 or 6 ft)',
+  'Safe distance'
+];
 
 /* ---------- MAP INITIALISE ---------- */
 const map = L.map('map').setView([37.8, -96], 4);
 map.zoomControl.setPosition('bottomleft');
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'Map data © OpenStreetMap contributors'}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {attribution:'Map data © OpenStreetMap contributors'}).addTo(map);
 
 /* ---------- DATA ---------- */
 const sheetURL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv';
 let dataLookup={},geojsonLayer,currentLegend;
 let currentMode='E-bike',currentVariable='Age_Class3_(E-Bike)';
 
-/* ---------- LOAD CSV & DRAW STATES ---------- */
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
-  const rows=Papa.parse(txt,{header:true}).data;
-  rows.forEach(row=>{const s=row.State?.trim();if(s)dataLookup[s]=row;});
+  Papa.parse(txt,{header:true}).data.forEach(row=>{
+    const s=row.State?.trim();if(s)dataLookup[s]=row;
+  });
+
   geojsonLayer=L.geoJson(statesData,{
     style:f=>getStyle(f,currentVariable),
-    onEachFeature:(_,layer)=>bindPopupToLayer(layer)
+    onEachFeature:(_,layer)=>bindPopup(layer)
   }).addTo(map);
-  geojsonLayer.eachLayer(l=>l.bindTooltip(l.feature.properties.name,{permanent:true,direction:'center',className:'state-label'}).openTooltip());
-  updateVariableDropdown(currentMode);
+
+  geojsonLayer.eachLayer(l=>l.bindTooltip(
+    l.feature.properties.name,{permanent:true,direction:'center',className:'state-label'}).openTooltip());
+
+  fillVariableDropdown(currentMode);
   updateLegend(currentVariable);
 });
 
-/* ---------- DROPDOWN LISTENERS ---------- */
+/* ---------- UI LISTENERS ---------- */
 document.getElementById('mode-select').addEventListener('change',e=>{
-  currentMode=e.target.value;updateVariableDropdown(currentMode);
+  currentMode=e.target.value;fillVariableDropdown(currentMode);
 });
 document.getElementById('variable-select').addEventListener('change',e=>{
   currentVariable=e.target.value;
   geojsonLayer.setStyle(f=>getStyle(f,currentVariable));
-  updateLegend(currentVariable);
-  updatePopups();
+  updateLegend(currentVariable);updatePopups();
 });
 
-/* ---------- VARIABLE DROPDOWN FILL ---------- */
-function updateVariableDropdown(mode){
-  const sel=document.getElementById('variable-select');
-  sel.innerHTML='';
-  const vars=modeVariables[mode];if(!vars.length){sel.innerHTML='<option>No variables</option>';sel.disabled=true;return;}
-  vars.forEach(v=>{const o=document.createElement('option');o.value=v.value;o.textContent=v.label;sel.appendChild(o);});
+/* ---------- DROPDOWN ---------- */
+function fillVariableDropdown(mode){
+  const sel=document.getElementById('variable-select');sel.innerHTML='';
+  const vars=modeVariables[mode];
+  if(!vars.length){sel.innerHTML='<option>No variables</option>';sel.disabled=true;return;}
+  vars.forEach(v=>{
+    const o=document.createElement('option');o.value=v.value;o.textContent=v.label;sel.appendChild(o);
+  });
   sel.disabled=false;currentVariable=vars[0].value;
   geojsonLayer.setStyle(f=>getStyle(f,currentVariable));
   updateLegend(currentVariable);updatePopups();
 }
 
-/* ---------- STYLE / COLOR ---------- */
+/* ---------- STYLE & COLOR ---------- */
 function getStyle(feature,variable){
   const v=dataLookup[feature.properties.name]?.[variable];
   return {fillColor:getColor(v,variable)||'#ccc',weight:1,color:'white',fillOpacity:getColor(v,variable)?0.7:0};
 }
 
 function getColor(value,variable){
+  /* --- common blank handler --- */
   if(!value||value==='NA'||value==='Mode not defined'){
     if(variable==='Age_limit') value='Regulated at local level';
     else return '#cccccc';
   }
 
+  /* ====== E-BIKE + E-SCOOTER existing branches ===== */
   if(variable==='Age_Class3_(E-Bike)'){
     if(value==='None') return '#ffffb2';
     const n=parseInt(value);if(!isNaN(n)) return n>=16?'#1a9641':'#fdae61';
   }
-
   if(variable==='Helmet_Grouped_(E-Bike)'){
-    const colors={
-      '12 or below':'#a6cee3','14 or below':'#1f78b4','15 or below':'#b2df8a','16 or below':'#33a02c',
-      '17 or below':'#fb9a99','18 or below':'#e31a1c','21 or below':'#fdbf6f','Not required':'#cab2d6',
-      'Required for all users':'#6a3d9a'
-    };
-    const key=Object.keys(colors).find(k=>k.toLowerCase()===value.trim().toLowerCase());
-    return colors[key]||'#ccc';
+    const c={'12 or below':'#a6cee3','14 or below':'#1f78b4','15 or below':'#b2df8a','16 or below':'#33a02c','17 or below':'#fb9a99','18 or below':'#e31a1c','21 or below':'#fdbf6f','Not required':'#cab2d6','Required for all users':'#6a3d9a'};
+    const k=Object.keys(c).find(k=>k.toLowerCase()===value.trim().toLowerCase());return c[k]||'#ccc';
   }
-
   if(variable==='Sidewalk_Riding_(E-Bike)'){
-    const v=canonical(value);const c={'can ride':'#1a9641','partial allowed':'#fdae61','cannot ride certain classes':'#984ea3','cannot ride':'#d7191c','cannot ride but can stand and park':'#377eb8'};
-    return c[v]||'#ccc';
+    const v=canon(value);const c={'can ride':'#1a9641','partial allowed':'#fdae61','cannot ride certain classes':'#984ea3','cannot ride':'#d7191c','cannot ride but can stand and park':'#377eb8'};return c[v]||'#ccc';
   }
-
-  if(variable==='Sidewalk restrictions(BIKE)'){
-    const v=canonical(value);const c={'cannot ride on the sidewalks':'#d7191c','can ride on the sidewalks':'#1a9641','can ride on the sidewalks with exceptions':'#fdae61','cannot ride on sidewalk, unless local law permits':'#377eb8'};
-    return c[v]||'#ccc';
-  }
-
   if(variable==='License_Req_Grouped'){
-    const c={'DL not required':'#1a9641','DL or permit required':'#fdae61','DL required':'#d7191c','prohibited':'#7570b3'};
-    return c[value]||'#ccc';
+    const c={'DL not required':'#1a9641','DL or permit required':'#fdae61','DL required':'#d7191c','prohibited':'#7570b3'};return c[value]||'#ccc';
+  }
+  if(variable==='Age_limit'){
+    let v=canon(value);if(v==='mode not defined') v='regulated at local level';
+    const c={'8':'#1a9641','12':'#a6d96a','14':'#fdae61','15':'#f46d43','16':'#d73027','regulated at local level':'#ffffbf','prohibited':'#7570b3'};return c[v]||'#ccc';
+  }
+  if(variable==='Helmet_Requirement'){
+    const c={'Not required':'#1a9641','Under 16':'#a6d96a','Under 17':'#fdae61','Under 18':'#f46d43','Under 19':'#d73027','Riders all age':'#66c2a5','Mode prohibited':'#7570b3'};return c[value]||'#ccc';
   }
 
-  if(variable==='Age_limit'){
-    let v=canonical(value);if(v==='mode not defined') v='regulated at local level';
-    const c={'8':'#1a9641','12':'#a6d96a','14':'#fdae61','15':'#f46d43','16':'#d73027','regulated at local level':'#ffffbf','prohibited':'#7570b3'};
+  /* ====== CONVENTIONAL BIKE NEW BRANCHES ===== */
+  if(variable==='Sidewalk restrictions(BIKE)'){
+    const v=canon(value);const c={'cannot ride on the sidewalks':'#d73027','can ride on the sidewalks':'#1a9641','can ride on the sidewalks with exceptions':'#fdae61','cannot ride on sidewalk, unless local law permits':'#377eb8'};return c[v]||'#ccc';
+  }
+
+  if(variable==='Helmet_Law(BIKE)'){
+    const v=canon(value);const c={
+      'not required':'#1a9641',
+      'required for users under 12':'#c7e9c0',
+      'required for users under 14':'#ffffb2',
+      'required for users under 15':'#fec44f',
+      'required for users under 16':'#fdae61',
+      'required for users under 17':'#fb6a4a',
+      'required for users under 18':'#d73027'
+    };
     return c[v]||'#ccc';
   }
 
-  if(variable==='Helmet_Requirement'){
-    const c={'Not required':'#1a9641','Under 16':'#a6d96a','Under 17':'#fdae61','Under 18':'#f46d43','Under 19':'#d73027','Riders all age':'#66c2a5','Mode prohibited':'#7570b3'};
-    return c[value]||'#ccc';
+  if(variable==='specific_equipment_requirements(BIKE)'){
+    const v=canon(value);
+    if(v.includes('serial number')) return '#8c6bb1';
+    if(v.includes('reflector')||v.includes('bell')||v.includes('seat')||v.includes('wheel')) return '#80cdc1';
+    if(v.includes('front')&&v.includes('rear')&&v.includes('lights')&&v.includes('brake')) return '#1a9641';
+    if(v.includes('front')&&v.includes('rear')&&v.includes('lights')) return '#fdae61';
+    return '#cccccc'; /* Unspecified / Other */
+  }
+
+  if(variable==='Access(BIKE)'){
+    const v=canon(value);const c={'fully allowed':'#1a9641','allowed unless signage prohibits':'#fdae61','prohibited unless signage allows':'#d73027','conditional or discretionary':'#8c8c8c'};return c[v]||'#ccc';
+  }
+
+  if(variable==='Motor_Vehicle_passing_distance(BIKE)'){
+    const v=canon(value);
+    if(v==='2 ft'||v==='2ft') return '#d9f0a3';
+    if(v.startsWith('3')||v==='adjacent lane'||v.includes('3 ft or adjacent lane')) return '#a6d96a';
+    if(v==='4 ft'||v==='4ft') return '#66bd63';
+    if(v==='6 ft'||v==='6ft') return '#1a9641';
+    if(v.startsWith('speed')) return '#fdae61';            // Speed-based (3 or 6 ft)
+    if(v.startsWith('safe')) return '#8c6bb1';             // Safe distance
+    return '#cccccc';
   }
 
   return '#ccc';
 }
 
 /* ---------- HELPERS ---------- */
-function canonical(val){return (val??'').trim().replace(/\s+/g,' ').toLowerCase();}
+const canon=val=>(val??'').trim().replace(/\s+/g,' ').toLowerCase();
 
 /* ---------- LEGEND ---------- */
 function updateLegend(variable){
   if(currentLegend) map.removeControl(currentLegend);
   currentLegend=L.control({position:'bottomright'});
   currentLegend.onAdd=()=>{
-    const div=L.DomUtil.create('div','info legend'),catMap=new Map();
+    const div=L.DomUtil.create('div','info legend'),mapVals=new Map();
     Object.values(dataLookup).forEach(r=>{
       let v=r?.[variable];if(!v||v==='NA') return;
-      if(variable==='Age_limit'&&canonical(v)==='mode not defined') v='Regulated at local level';
-      catMap.set(canonical(v),v.trim());
+      if(variable==='Age_limit'&&canon(v)==='mode not defined') v='Regulated at local level';
+      mapVals.set(canon(v),v.trim());
     });
     const ordered=
-      variable==='Sidewalk_Riding_(E-Bike)' ? sidewalkOrder.filter(l=>catMap.has(canonical(l))) :
-      variable==='Sidewalk restrictions(BIKE)' ? bikeSidewalkOrder.filter(l=>catMap.has(canonical(l))) :
-      variable==='Age_limit' ? ageLimitOrder.filter(l=>catMap.has(canonical(l))) :
-      Array.from(catMap.values()).sort((a,b)=>a.localeCompare(b));
+      variable==='Sidewalk_Riding_(E-Bike)'           ? sidewalkOrder.filter(l=>mapVals.has(canon(l))) :
+      variable==='Sidewalk restrictions(BIKE)'        ? bikeSidewalkOrder.filter(l=>mapVals.has(canon(l))) :
+      variable==='Age_limit'                          ? ageLimitOrder.filter(l=>mapVals.has(canon(l))) :
+      variable==='Helmet_Law(BIKE)'                   ? helmetBikeOrder.filter(l=>mapVals.has(canon(l))) :
+      variable==='specific_equipment_requirements(BIKE)' ? equipmentOrder.filter(l=>mapVals.has(canon(l))) :
+      variable==='Access(BIKE)'                       ? accessBikeOrder.filter(l=>mapVals.has(canon(l))) :
+      variable==='Motor_Vehicle_passing_distance(BIKE)'? passingDistanceOrder.filter(l=>mapVals.has(canon(l))) :
+      Array.from(mapVals.values()).sort((a,b)=>a.localeCompare(b));
 
     div.innerHTML=ordered.map(cat=>`<i style="background:${getColor(cat,variable)}"></i> ${cat}`).join('<br>');
     return div;
@@ -225,19 +292,19 @@ function updateLegend(variable){
 }
 
 /* ---------- POPUPS ---------- */
-function bindPopupToLayer(layer){
+function bindPopup(layer){
   const state=layer.feature.properties.name;
   let val=dataLookup[state]?.[currentVariable]||'N/A';
-  if(currentVariable==='Age_limit'&&canonical(val)==='mode not defined') val='Regulated at local level';
+  if(currentVariable==='Age_limit'&&canon(val)==='mode not defined') val='Regulated at local level';
   const label=modeVariables[currentMode].find(v=>v.value===currentVariable)?.label||currentVariable;
   const pdf=dataLookup[state]?.PDF_URL||'';
   layer.bindPopup(`<b>${state}</b><br><strong>Mode:</strong> ${currentMode}<br><strong>Variable:</strong> ${label}<br><strong>Category:</strong> ${val}<br>${pdf?`<a href="${pdf}" target="_blank">View State Regulation PDF</a>`:''}`);
 }
-function updatePopups(){geojsonLayer.eachLayer(bindPopupToLayer);}
+function updatePopups(){geojsonLayer.eachLayer(bindPopup);}
 
 /* ---------- CITY MARKERS ---------- */
 const cities=[
-  { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
+  {  name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
   { name: 'Austin, TX', coords: [30.2672, -97.7431], pdf_url: '#' },
   { name: 'Boston, MA', coords: [42.3601, -71.0589], pdf_url: '#' },
   { name: 'Denver, CO', coords: [39.7392, -104.9903], pdf_url: '#' },
@@ -254,13 +321,12 @@ const cities=[
   { name: 'Seattle, WA', coords: [47.6062, -122.3321], pdf_url: '#' },
   { name: 'Phoenix, AZ', coords: [33.4484, -112.0740], pdf_url: '#' }
 ];
-const cityMarkers={},listBtn=document.getElementById('toggle-city-list');
-let markersOn=true;
+const cityMarkers={},btn=document.getElementById('toggle-city-list');let showCities=true;
 cities.forEach(c=>cityMarkers[c.name]=L.marker(c.coords).addTo(map).bindPopup(`<strong>${c.name}</strong><br><a href="${c.pdf_url}" target="_blank">View City Regulation PDF</a>`));
-listBtn.addEventListener('click',()=>{
+btn.addEventListener('click',()=>{
   document.getElementById('city-list').style.display=document.getElementById('city-list').style.display==='none'?'block':'none';
-  markersOn=!markersOn;
-  Object.values(cityMarkers).forEach(m=>markersOn?m.addTo(map):map.removeLayer(m));
+  showCities=!showCities;
+  Object.values(cityMarkers).forEach(m=>showCities?m.addTo(map):map.removeLayer(m));
 });
 </script>
 </body>
