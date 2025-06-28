@@ -236,7 +236,24 @@ function bindPopupToLayer(layer){
 function updatePopups(){geojsonLayer.eachLayer(bindPopupToLayer);}
 
 /* ---------- CITY MARKERS ---------- */
-const cities=[{name:'Atlanta, GA',coords:[33.749,-84.388],pdf_url:'#'}, /* …others… */ {name:'Phoenix, AZ',coords:[33.4484,-112.074],pdf_url:'#'}];
+const cities=[
+  { name: 'Atlanta, GA', coords: [33.7490, -84.3880], pdf_url: '#' },
+  { name: 'Austin, TX', coords: [30.2672, -97.7431], pdf_url: '#' },
+  { name: 'Boston, MA', coords: [42.3601, -71.0589], pdf_url: '#' },
+  { name: 'Denver, CO', coords: [39.7392, -104.9903], pdf_url: '#' },
+  { name: 'Madison, WI', coords: [43.0731, -89.4012], pdf_url: '#' },
+  { name: 'Minneapolis, MN', coords: [44.9778, -93.2650], pdf_url: '#' },
+  { name: 'Portland, OR', coords: [45.5051, -122.6750], pdf_url: '#' },
+  { name: 'Richmond, VA', coords: [37.5407, -77.4360], pdf_url: '#' },
+  { name: 'St. Louis, MO', coords: [38.6270, -90.1994], pdf_url: '#' },
+  { name: 'Washington, D.C.', coords: [38.9072, -77.0369], pdf_url: '#' },
+  { name: 'New York, NY', coords: [40.7128, -74.0060], pdf_url: '#' },
+  { name: 'Philadelphia, PA', coords: [39.9526, -75.1652], pdf_url: '#' },
+  { name: 'Tampa, FL', coords: [27.9506, -82.4572], pdf_url: '#' },
+  { name: 'Los Angeles, CA', coords: [34.0522, -118.2437], pdf_url: '#' },
+  { name: 'Seattle, WA', coords: [47.6062, -122.3321], pdf_url: '#' },
+  { name: 'Phoenix, AZ', coords: [33.4484, -112.0740], pdf_url: '#' }
+];
 const cityMarkers={},listBtn=document.getElementById('toggle-city-list');
 let markersOn=true;
 cities.forEach(c=>cityMarkers[c.name]=L.marker(c.coords).addTo(map).bindPopup(`<strong>${c.name}</strong><br><a href="${c.pdf_url}" target="_blank">View City Regulation PDF</a>`));
