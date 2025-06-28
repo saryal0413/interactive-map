@@ -235,7 +235,9 @@ function getStyle(feature, variable) {
 }
 
 function getColor(value, variable) {
-  if (!value || value === 'NA' || value === 'Mode not defined') return '#cccccc';
+  if (!value || value === 'NA' || value === 'Mode not defined') {
+    if variable == 'Age_limit') value ='Regulated at local level';
+    else return '#cccccc';
 
   if (variable === 'Age_Class3_(E-Bike)') {
     if (value === "None") return "#ffffb2";
@@ -289,7 +291,6 @@ function getColor(value, variable) {
   if (variable === 'Age_limit') {
     let v = canonical(value);
     if (v === 'mode not defiined') v='regulate at local level';
-    
     const ageColors = {
       '8': '#1a9641',
       '12': '#a6d96a',
@@ -318,11 +319,11 @@ function getColor(value, variable) {
   return '#ccc';
 }
 
-// ---------- helper: trims, collapses multiple spaces, lowers case ----------
+// ========================NORMALIZED HELPER===========================
 function canonical(val) {
   return (val ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
-
+//========================== LEGEND BUILDER =================
 function updateLegend(variable) {
   if (currentLegend) map.removeControl(currentLegend);
   currentLegend = L.control({ position: 'bottomright' });
@@ -356,6 +357,16 @@ function updateLegend(variable) {
       'Cannot ride'
     ];
 
+    const ageLimitOrder = [
+      '8',
+      '12',
+      '14',
+      '15',
+      '16',
+      'Regulated at local level',
+      'Prohibited'
+    ];
+
     const orderedCats = (variable === 'Sidewalk_Riding_(E-Bike)')
       ? sidewalkOrder.filter(lbl => categoriesMap.has(canonical(lbl)))
       : categories.sort((a, b) => a.localeCompare(b));
@@ -378,6 +389,11 @@ function bindPopupToLayer(layer) {
   const state = layer.feature.properties.name;
   const row = dataLookup[state];
   const value = row?.[currentVariable] || 'N/A';
+
+  if (currentVariable === 'Age_limit' && canonical(value) === 'mode not defined') {
+    value = 'Rugulated at local level';
+  }
+
   const variableLabel = modeVariables[currentMode]?.find(v => v.value === currentVariable)?.label || currentVariable;
   const pdf = row?.PDF_URL;
 
