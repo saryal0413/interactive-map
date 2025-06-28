@@ -120,10 +120,11 @@ const accessBikeOrder = [
 ];
 const passingDistanceOrder = [
   '2 ft',
-  '3 ft or adjacent lane',
+  '3 ft',
   '4 ft',
   '6 ft',
   'Speed-based (3 or 6 ft)',
+  'Adjacent lane',
   'Safe distance'
 ];
 
@@ -267,11 +268,12 @@ function getColor(value,variable){
   if(variable==='Motor_Vehicle_passing_distance(BIKE)'){
     const v=canon(value);
     if(v==='2 ft'||v==='2ft')                              return '#d9f0a3';
-    if(v.startsWith('3')||v.includes('adjacent lane'))     return '#a6d96a';   // 3 ft OR adjacent lane
+    if(v === '3 ft' || v === '3ft')     return '#a6d96a';  
     if(v==='4 ft'||v==='4ft')                              return '#66bd63';
     if(v==='6 ft'||v==='6ft')                              return '#1a9641';
-    if(v.startsWith('speed'))                              return '#fdae61';   // speed-based
-    if(v.startsWith('safe'))                               return '#8c6bb1';   // safe distance
+    if(v === '3 ft for under 35mph, 6ft for over')          return '#fdae61'; 
+    if(v.startsWith('adjacent lane'))                              return '#fdae61';   // speed-based
+    if(v.startsWith('safe')) || v.includes('safe'))                 return '#8c6bb1';   // safe distance
     return '#cccccc';
   }
 
