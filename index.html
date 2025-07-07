@@ -223,9 +223,20 @@ const orders={
 'Board_roads_access': [
   'Can ride on roads',
   'Conditional riding on roads',
-  'Cannot ride on roads',
   'Restricted',
   'No state law'
+],
+
+'Board_Helmet_Requirement' : [
+  'Under 14',
+  'Under 15',
+  'Under 16',
+  'Under 17',
+  'Under 18',
+  'Under 19',
+  'Conditional requirement',
+  'Not required',
+  'Mode not defined'
 ],
 };
 
@@ -401,6 +412,18 @@ C.insM={
 
 
 /* ---- Boards palettes ---- */
+C.helmBrd = {
+  'under 14'            : '#1a9641',  // dark green
+  'under 15'            : '#66bd63',
+  'under 16'            : '#a6d96a',
+  'under 17'            : '#d9ef8b',
+  'under 18'            : '#fdae61',
+  'under 19'            : '#f46d43',
+  'conditional requirement' : '#fee08b',
+  'not required'        : '#8c8c8c',
+  'mode not defined'    : '#cccccc'
+};
+  
 C.sideBrd = {
   'can ride on sidewalks' : '#1a9641',   // green
   'restricted'            : '#d73027',   // red
@@ -410,7 +433,6 @@ C.sideBrd = {
 C.roadBrd = {
   'can ride on roads'             : '#1a9641',
   'conditional riding on roads'  : '#fee08b',
-  'cannot ride on roads'         : '#f46d43',
   'restricted'                   : '#d73027',
   'no state law'                 : '#8c8c8c'
 };
