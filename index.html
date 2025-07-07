@@ -180,6 +180,14 @@ const orders={
   'Insurance_requirment(Moped)':['Not required','Required']
 };
 
+/* ---------- COLOUR RESOLVER ---------- */
+const canon = v =>
+  (v||'')
+    .trim()
+    .toLowerCase()
+    .replace(/[’‘´`]/g,"'");   // ← new: unify curly ⇢ straight
+
+
 /* ---------- COLOUR MAPS ---------- */
 const C={};
 
@@ -296,13 +304,15 @@ C.passB = {
   
 /* Moped palettes (from your file) */
 C.licM={
-  'standard class of driver’s license':                '#1a9641',  // dark green
-  'standard class of driver’s license + moped permit': '#66bd63',  // light green
-  'at least learner’s permit':                         '#fdae61',  // orange
-  'motorcycle license':                                '#d73027',  // red
-  'no license required':                               '#1f78b4',  // blue
-  'conditional / unclear':                             '#8c8c8c',  // grey
-  'unclear / other':                                   '#cccccc'   // light grey
+  "standard class of driver's license":                '#1a9641',
+  "standard class of driver's license + moped permit": '#66bd63',
+  "at least learner’s permit":                         '#fdae61',
+  "motorcycle license":                                '#d73027',
+  "no license required":                               '#1f78b4',
+  "conditional / unclear":                             '#8c8c8c',
+  "unclear / other":                                   '#cccccc',
+  /* alias for rows that say “conditional requirement” */
+  "conditional requirement":                           '#8c8c8c'
 };
 
   
