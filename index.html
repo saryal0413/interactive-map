@@ -507,7 +507,10 @@ function bindPopup(l){
   const val=data[st]?.[curVar]||'N/A';
   const lbl=modeVars[curMode].find(o=>o.value===curVar)?.label||curVar;
   const pdf=data[st]?.PDF_URL||'';
-  l.bindPopup(`<b>${st}</b><br><strong>${lbl}:</strong> ${val}${pdf?`<br><a href="${pdf}" target="_blank" style="font-weight:bold;color:#00539b;text-decoration:underline;">View State Regulation PDF</a>`:''}`);
+  l.bindPopup(`<br><a href="${pdf}" target="_blank" style="display:inline-flex;align-items:center;margin-top:6px;">
+  <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4c4.svg" style="height:18px;width:18px;margin-right:6px;">
+  <span style="color:#00539b;text-decoration:underline;font-weight:bold;">View State Regulation PDF</span>
+</a>`);
 }
 function redraw(){
   layer.setStyle(f=>({
