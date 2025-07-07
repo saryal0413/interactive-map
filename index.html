@@ -112,7 +112,54 @@ const orders={
     'Under 17',
     'Under 18',
     'Under 19'],
+
+  /*------------------CONVENTIONAL BICYCLE-----------------------*/
+  'Sidewalk_restrictions(BIKE)':[
+    'Can ride on the sidewalks',
+    'Can ride on the sidewalks with exceptions',
+    'Cannot ride on sidewalk, unless local law permits',
+    'Cannot ride on the sidewalks'
+  ],
+
+  'Helmet_Law(BIKE)':[
+    'Not requirement',
+    'Required for user under 16',
+    'Required for users under 12',
+    'Required for users under 14',
+    'Required for users under 15',
+    'Required for users under 16',
+    'Required for users under 17',
+    'Required for users under 18'
+  ],
   
+  'specific_equipment_requirements(BIKE)':[
+    'Front and rear lights, brakes',
+    'Front and rear lights, brakes, bell',
+    'Front and rear lights, brakes, seat, handlebars',
+    'Front and rear lights, brakes, wheel reflectors',
+    'Front and rear lights, reflectors',
+    'Front and rear lights, reflectors, breaks',
+    'Front and rear lights, sear brakes',
+    'Serial number, front and rear lights, brakes',
+    'white front light and read rear'
+  ],
+  
+  'Access(BIKE)':[
+    'Allowed unless signage prohibits',
+    'Conditional or Discretionary',
+    'Fully Allowed',
+    'Prohinited unless signage allows'
+  ],
+  
+  'Motor_Vehicle_passing_distance(BIKE)':[
+    '2 ft',
+    '3 ft',
+    '3 ft for under 35 mph, 6ft for over',
+    '4 ft',
+    'Adjacent lane',
+    'Adjacent lane or 3 ft',
+    'Safe distance'
+  ],
 
   /* --- MOPED (unchanged from your last version) --- */
   'License_Requirement(Moped)':['Standard class of driver’s license','No license under 5 hp',
@@ -154,7 +201,9 @@ C.sideEB={
   'cannot ride certain classes':'#fee08b',
   'partial allowed':'#66bd63'
 };
-/* E-Scooter palettes*/
+
+  
+  /* E-Scooter palettes*/
 C.licES = {
   'dl not required': '#1a9641',
   'dl or permit required': '#a6d96a',
@@ -184,6 +233,56 @@ C.helmES = {
   'under 18': '#fdae61',
   'nder 19': '#fc8d59'
 };
+
+
+/* Conventional-bicycle palettes*/
+C.sideB = {
+  'can ride on the sidewalks':'#1a9641',
+  'can ride on the sidewalks with exceptions':'#66bd63',
+  'cannot ride on sidewalk, unless local law permits':'#fdae61',
+  'cannot ride on the sidewalks':'#d73027'
+};
+
+C.helmB = {
+  'not requirement':'#1a9641',
+  'required for user under 16':'#a6d96a',
+  'required for users under 12':'#d9ef8b',
+  'required for users under 14':'#fee08b',
+  'required for users under 15':'#fdae61',
+  'required for users under 16':'#f46d43',
+  'required for users under 17':'#d73027',
+  'required for users under 18':'#a50026'
+};
+
+C.equipB = {
+  'front and rear lights, brakes':'#1a9641',
+  'front and rear lights, brakes, bell':'#66bd63',
+  'front and rear lights, brakes, seat, handlebars':'#a6d96a',
+  'front and rear lights, brakes, wheel reflectors':'#d9ef8b',
+  'front and rear lights, reflectors':'#fee08b',
+  'front and rear lights, reflectors, breaks':'#fdae61',
+  'front and rear lights, sear brakes':'#f46d43',
+  'serial number, front and rear lights, brakes':'#d73027',
+  'white front light and read rear':'#a50026'
+};
+
+C.accessB = {
+  'allowed unless signage prohibits':'#1a9641',
+  'conditional or discretionary':'#fdae61',
+  'fully allowed':'#66bd63',
+  'prohinited unless signage allows':'#d73027'
+};
+
+C.passB = {
+  '2 ft':'#d73027',
+  '3 ft':'#fdae61',
+  '3 ft for under 35 mph, 6ft for over':'#fee08b',
+  '4 ft':'#a6d96a',
+  'adjacent lane':'#66bd63',
+  'adjacent lane or 3 ft':'#1a9641',
+  'safe distance':'#8c8c8c'
+};
+
   
 /* Moped palettes (from your file) */
 C.licM={
@@ -218,6 +317,12 @@ function colourOf(raw,v){
   if(v==='Age_limit')             return C.ageES[c]  ||'#ccc';
   if(v==='Helmet_Requirement')    return C.helmES[c] ||'#ccc';
 
+  /* Conventional bicycle ------------------------------------------*/
+  if(v==='Sidewalk_restrictions(BIKE)')            return C.sideB[c]  || '#ccc';
+  if(v==='Helmet_Law(BIKE)')                       return C.helmB[c]  || '#ccc';
+  if(v==='specific_equipment_requirements(BIKE)')  return C.equipB[c] || '#ccc';
+  if(v==='Access(BIKE)')                           return C.accessB[c]|| '#ccc';
+  if(v==='Motor_Vehicle_passing_distance(BIKE)')   return C.passB[c]  || '#ccc';
 
   /* Moped ------------------------------------------------------*/
   if(v==='License_Requirement(Moped)')     return C.licM[c] ||'#ccc';
