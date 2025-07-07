@@ -566,21 +566,25 @@ document.getElementById('variable-select').onchange=e=>{
 /* ---------- CITIES ---------- */
 const cities=[
   {n:'Atlanta, GA',c:[33.749,-84.388], pdf:'https://drive.google.com/file/d/1xM6OspaDjTziKihI0BM9fmGIaGrQ7xFs/view?usp=sharing'},
-  {n:'Austin, TX',c:[30.267,-97.743]},
-  {n:'Boston, MA',c:[42.36,-71.059]},
-  {n:'Denver, CO',c:[39.739,-104.99]},
-  {n:'Los Angeles, CA',c:[34.052,-118.244]},
-  {n:'Madison, WI',c:[43.073,-89.401]},
-  {n:'Minneapolis, MN',c:[44.978,-93.265]},
-  {n:'New York, NY',c:[40.713,-74.006]},
-  {n:'Philadelphia, PA',c:[39.953,-75.165]},
-  {n:'Phoenix, AZ',c:[33.448,-112.074]},
-  {n:'Portland, OR',c:[45.505,-122.675]},
-  {n:'Richmond, VA',c:[37.541,-77.436]},
-  {n:'Seattle, WA',c:[47.606,-122.332]},
-  {n:'St. Louis, MO',c:[38.627,-90.199]},
-  {n:'Tampa, FL',c:[27.951,-82.457]},
-  {n:'Washington, D.C.',c:[38.907,-77.037]}
+  {n:'Austin, TX',c:[30.267,-97.743], pdf: 'https://drive.google.com/file/d/1Au14nzCQGvYssTSpy5ARxmQh4WRW8Ka3/view?usp=sharing'},
+  {n:'Boston, MA',c:[42.36,-71.059], pdf: 'https://drive.google.com/file/d/1SoiJZ95zYIp9hRSXmEucPnWOWXoGyi78/view?usp=sharing'},
+  {n:'Denver, CO',c:[39.739,-104.99], pdf:'https://drive.google.com/file/d/1kvKvvUVD9vbQfJpiaTf7CVY4yVockfee/view?usp=sharing'},
+  {n:'Los Angeles, CA',c:[34.052,-118.244], pdf:'https://drive.google.com/file/d/1ojtZpFEzbWlKeTkbI4EXbYT5kQLw5TEp/view?usp=sharing'},
+  {n:'Madison, WI',c:[43.073,-89.401], pdf:'https://drive.google.com/file/d/1ca3jw0lC6YBMvW68KqL9EgGtSe16zSpV/view?usp=sharing'},
+  {n:'Minneapolis, MN',c:[44.978,-93.265], pdf:'https://drive.google.com/file/d/1wgETTgYHVFnlVOd4nQWFXCaRMISoJOGg/view?usp=sharing'},
+  {n:'New York, NY',c:[40.713,-74.006],'pdf:https://drive.google.com/file/d/1FdC08iUb9O4yFs0AMahIGSYU31LEdxtV/view?usp=sharing'},
+  {n:'Philadelphia, PA',c:[39.953,-75.165], pdf: 'https://drive.google.com/file/d/1vLblaZA6QaS5XoJvrfQCZqLm7dyUbiR0/view?usp=sharing'},
+  {n:'Phoenix, AZ',c:[33.448,-112.074], pdf:'https://drive.google.com/file/d/1sx0NvfIv6PGqUDlwtjoR4iEzQ5bGPEV-/view?usp=sharing'},
+  {n:'Portland, OR',c:[45.505,-122.675], pdf:'https://drive.google.com/file/d/14g1FjYEFt5iyNIJ8v6p5-VpftIwUixb6/view?usp=sharing'},
+  {n:'Richmond, VA',c:[37.541,-77.436], pdf: 'https://drive.google.com/file/d/17YS64brl7JsLE02x5SgmGNGMLou9KQKJ/view?usp=sharing'},
+  {n:'Seattle, WA',c:[47.606,-122.332], pdf:'https://drive.google.com/file/d/19PRI9MlyvA8I93MQ77SeLngjmAf4xLmj/view?usp=sharing'},
+  {n:'St. Louis, MO',c:[38.627,-90.199],pdf:'https://drive.google.com/file/d/1lcjgqxTainGg4yCOXUe9V9rZ4h2oDuGu/view?usp=sharing'},
+  {n:'Tampa, FL',c:[27.951,-82.457], pdf: 'https://drive.google.com/file/d/1AWmbN6dyYVY5Gz4RVMJH4hrlCnYWDeF2/view?usp=sharing'},
+  {n:'Washington, D.C.',c:[38.907,-77.037], pdf:'https://drive.google.com/file/d/1FO5Jb6R56Wmm-Fzqjy0RiVND1k-qQprF/view?usp=sharing'},
+  {n:'Oxford, MA',c: [42.120, -71.865], pdf:'https://drive.google.com/file/d/1xBId3n0VzNmBm9vixhpSgIeZ4FNnngm0/view?usp=sharing'},
+  {n:'Wilmington, DE',c: [39.745, -75.546], pdf:'https://drive.google.com/file/d/1pJ35KjJWrWlwRqSrND-6rr9ZclPmZe5g/view?usp=sharing'},
+  {n: 'Salt Lake City, UT',c: [40.760, -111.891],pdf:'https://drive.google.com/file/d/1ZzHoZ7HMN21YgkXTXZFQP5BN2869FX8J/view?usp=sharing'},
+  {n: 'Portland, ME', c: [43.659, -70.256], pdf:'https://drive.google.com/file/d/1sp09GUaczAmngxYYK0fcmGU_BnH0nWRi/view?usp=sharing}
 ];
 const markers = cities.map(o => {
   const link = o.pdf
