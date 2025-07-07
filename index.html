@@ -582,13 +582,18 @@ const cities=[
   {n:'Tampa, FL',c:[27.951,-82.457]},
   {n:'Washington, D.C.',c:[38.907,-77.037]}
 ];
-const markers=cities.map(o=>L.marker(o.c).addTo(map).bindPopup(`<strong>${o.n}</strong>`));
-let showCities=true;
-document.getElementById('toggle-city').onclick=function(){
-  showCities=!showCities;
-  this.textContent=(showCities?'Hide':'Show')+' City Markers';
-  markers.forEach(m=>showCities?m.addTo(map):map.removeLayer(m));
-};
+const markers = cities.map(o => {
+  const link = o.pdf
+    ? `<br><a href="${o.pdf}" target="_blank" style="display:inline-flex;align-items:center;margin-top:6px;">
+         <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4c4.svg" style="height:18px;width:18px;margin-right:6px;">
+         <span style="color:#00539b;text-decoration:underline;font-weight:bold;">View City Regulation PDF</span>
+       </a>`
+    : '';
+  return L.marker(o.c)
+          .addTo(map)
+          .bindPopup(`<strong>${o.n}</strong>${link}`);
+});
+
 </script>
 </body>
 </html>
