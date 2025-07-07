@@ -190,17 +190,25 @@ const orders={
     'Unclear'
   ],
   
-  'Age_Requirement(Moped)':['16','15 – 15.5 with permit/course','None'],
+  'Age_Requirement(Moped)':[
+    '15',
+    '16',
+    '15–15.5 with permit or course',
+    'Under 15 with special license/permit'
+  ],
+  
   'Bikepath_restrictions(Moped)':['Not restricted','Restricted'],
   'Insurance_requirment(Moped)':['Not required','Required']
 };
 
 /* ---------- COLOUR RESOLVER ---------- */
-const canon = v =>
-  (v||'')
-    .trim()
-    .toLowerCase()
-    .replace(/[’‘´`]/g,"'");   // ← new: unify curly ⇢ straight
+const canon = v => (v||'')
+  .trim()
+  .toLowerCase()
+  .replace(/[’‘´`]/g,"'")
+  .replace(/[–—]/g,'-')
+  .replace(/\s*-\s*/g,' - ')
+  .replace(/\s+/g,' ');
 
 
 /* ---------- COLOUR MAPS ---------- */
@@ -348,7 +356,14 @@ C.helmM = {
   'unclear'                   : '#cccccc'
 };
   
-C.ageM={'16':'#1a9641','15 – 15.5 with permit/course':'#fdae61','none':'#66c2a5'};
+C.ageM={
+  C.ageM = {
+  '15': '#a6d96a',
+  '16': '#1a9641',
+  '15 - 15.5 with permit or course': '#fdae61',
+  'under 15 with special license/permit': '#d73027'
+};
+
 C.pathM={'not restricted':'#1a9641','restricted':'#d73027'};
 C.insM={'not required':'#1a9641','required':'#d73027'};
 
