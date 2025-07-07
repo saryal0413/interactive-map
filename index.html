@@ -164,8 +164,8 @@ const orders={
 
   /* --- MOPED (unchanged from your last version) --- */
   'License_Requirement(Moped)':[
-    'Standard class of driver’s license',
-    'Standard class of driver’s license + moped permit',
+    "Standard class of driver's license",
+    "Standard class of driver's license + moped permit",
     'At least learner’s permit',
     'Motorcycle license',
     'No license required',
@@ -408,7 +408,7 @@ function updateLegend(){
   legend.onAdd=()=>{
     const el=L.DomUtil.create('div','info legend');
     const present=new Set(Object.values(data).map(r=>r[curVar]).filter(x=>x&&x!=='NA'));
-    const list=(orders[curVar]||Array.from(present).sort()).filter(c=>present.has(c));
+    const list=orders[curVar] ? orders[curVar] : Array.from(present).sort();
     el.innerHTML=list.map(c=>`<i style="background:${colourOf(c,curVar)}"></i> ${c}`).join('<br>');
     return el;
   };
