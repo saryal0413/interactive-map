@@ -572,8 +572,8 @@ const cities=[
   {n:'Los Angeles, CA',c:[34.052,-118.244], pdf:'https://drive.google.com/file/d/1ojtZpFEzbWlKeTkbI4EXbYT5kQLw5TEp/view?usp=sharing'},
   {n:'Madison, WI',c:[43.073,-89.401], pdf:'https://drive.google.com/file/d/1ca3jw0lC6YBMvW68KqL9EgGtSe16zSpV/view?usp=sharing'},
   {n:'Minneapolis, MN',c:[44.978,-93.265], pdf:'https://drive.google.com/file/d/1wgETTgYHVFnlVOd4nQWFXCaRMISoJOGg/view?usp=sharing'},
-  {n:'New York, NY',c:[40.713,-74.006],'pdf:https://drive.google.com/file/d/1FdC08iUb9O4yFs0AMahIGSYU31LEdxtV/view?usp=sharing'},
-  {n:'Philadelphia, PA',c:[39.953,-75.165], pdf: 'https://drive.google.com/file/d/1vLblaZA6QaS5XoJvrfQCZqLm7dyUbiR0/view?usp=sharing'},
+  {n:'New York, NY',c:[40.713,-74.006],pdf:'https://drive.google.com/file/d/1FdC08iUb9O4yFs0AMahIGSYU31LEdxtV/view?usp=sharing'},
+  {n:'Philadelphia, PA',c:[39.953,-75.165], pdf:'https://drive.google.com/file/d/1vLblaZA6QaS5XoJvrfQCZqLm7dyUbiR0/view?usp=sharing'},
   {n:'Phoenix, AZ',c:[33.448,-112.074], pdf:'https://drive.google.com/file/d/1sx0NvfIv6PGqUDlwtjoR4iEzQ5bGPEV-/view?usp=sharing'},
   {n:'Portland, OR',c:[45.505,-122.675], pdf:'https://drive.google.com/file/d/14g1FjYEFt5iyNIJ8v6p5-VpftIwUixb6/view?usp=sharing'},
   {n:'Richmond, VA',c:[37.541,-77.436], pdf: 'https://drive.google.com/file/d/17YS64brl7JsLE02x5SgmGNGMLou9KQKJ/view?usp=sharing'},
@@ -597,6 +597,7 @@ const markers = cities.map(o => {
           .addTo(map)
           .bindPopup(`<strong>${o.n}</strong>${link}`);
 });
+  
 
 </script>
 </body>
