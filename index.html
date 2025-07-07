@@ -326,11 +326,6 @@ C.pathM={'not restricted':'#1a9641','restricted':'#d73027'};
 C.insM={'not required':'#1a9641','required':'#d73027'};
 
 /* ---------- COLOUR RESOLVER ---------- */
-const canon=v=>(v||'').trim().toLowerCase();
-function colourOf(raw,v){
-  if(!raw||raw==='NA') return '#ccc';
-  const c=canon(raw);
-
   /* E-bike -----------------------------------------------------*/
   if(v==='Age_Class3_(E-Bike)')        return C.ageEB[c]  ||'#ccc';
   if(v==='Helmet_Grouped_(E-Bike)')    return C.helmEB[c] ||'#ccc';
