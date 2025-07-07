@@ -12,7 +12,8 @@
     .info.legend{background:#142b59;color:#fff;padding:12px;font:16px/20px Arial,sans-serif;
                  box-shadow:0 2px 10px rgba(0,0,0,.2);border-radius:8px;max-width:90vw}
     .info.legend i{width:20px;height:20px;display:inline-block;margin-right:10px;margin-bottom:5px;vertical-align:middle;border-radius:3px}
-    .leaflet-tooltip.state-label{font-size:7px;font-weight:bold;background:transparent;border:none;text-shadow:1px 1px 2px #fff}
+    /* hide the permanent state labels */
+    .leaflet-tooltip.state-label{display:none;}
   </style>
 </head>
 
@@ -83,10 +84,15 @@ const modeVars={
 
 /* ---------- LEGEND ORDERS ---------- */
 const orders={
-  /* existing E-bike / scooter / bike entries unchanged … */
+  /* --- E-BIKE --- */
+  'Age_Class3_(E-Bike)':['No statewide minimum','14','15','16','18','Prohibited'],
+  'Helmet_Grouped_(E-Bike)':['Required for all users','18 or below','16 or below','15 or below','Not required'],
+  'Sidewalk_Riding_(E-Bike)':['Allowed','Allowed (local discretion)','Class 1 only','Prohibited'],
 
-  /* --- MOPED --- */
-  'License_Requirement(Moped)':['Standard class of driver’s license','No license under 5hp',
+  /* --- E-SCOOTER + BIKE (keep whatever you already had) */
+
+  /* --- MOPED (unchanged from your last version) --- */
+  'License_Requirement(Moped)':['Standard class of driver’s license','No license under 5 hp',
                                 'At least learner’s permit','Standard class + moped permit (<16)'],
   'Registration_requirement(Moped)':['Needs registration','Not required'],
   'Helmet_requirement(Moped)':['No helmet required','Under 18','Under 21','Universal helmet law','Conditional/exempt'],
@@ -97,7 +103,31 @@ const orders={
 
 /* ---------- COLOUR MAPS ---------- */
 const C={};
-/* Moped palettes */
+
+/* E-bike palettes */
+C.ageEB={
+  'no statewide minimum':'#1a9641',
+  '14':'#a6d96a',
+  '15':'#c7eae5',
+  '16':'#fdae61',
+  '18':'#d73027',
+  'prohibited':'#777777'
+};
+C.helmEB={
+  'required for all users':'#d73027',
+  '18 or below':'#f46d43',
+  '16 or below':'#fdae61',
+  '15 or below':'#a6d96a',
+  'not required':'#1a9641'
+};
+C.sideEB={
+  'allowed':'#1a9641',
+  'allowed (local discretion)':'#66bd63',
+  'class 1 only':'#fdae61',
+  'prohibited':'#d73027'
+};
+
+/* Moped palettes (from your file) */
 C.licM={
   'standard class of driver’s license':'#1a9641',
   'no license under 5hp':'#66bd63',
@@ -118,18 +148,23 @@ const canon=v=>(v||'').trim().toLowerCase();
 function colourOf(raw,v){
   if(!raw||raw==='NA') return '#ccc';
   const c=canon(raw);
-  /* Moped first (new) -------------------------------- */
-  if(v==='License_Requirement(Moped)')    return C.licM[c]||'#ccc';
-  if(v==='Registration_requirement(Moped)')return C.regM[c]||'#ccc';
-  if(v==='Helmet_requirement(Moped)')     return C.helmM[c]||'#ccc';
-  if(v==='Age_Requirement(Moped)')        return C.ageM[c]||'#ccc';
-  if(v==='Bikepath_restrictions(Moped)')   return C.pathM[c]||'#ccc';
-  if(v==='Insurance_requirment(Moped)')   return C.insM[c]||'#ccc';
 
-  /* ----- existing resolver (unchanged) ----- */
-  //  (for brevity I’m omitting the untouched existing E-bike / scooter / bike logic;
-  //   keep your last working functions here.)
-  return '#ccc';
+  /* E-bike -----------------------------------------------------*/
+  if(v==='Age_Class3_(E-Bike)')        return C.ageEB[c]  ||'#ccc';
+  if(v==='Helmet_Grouped_(E-Bike)')    return C.helmEB[c] ||'#ccc';
+  if(v==='Sidewalk_Riding_(E-Bike)')   return C.sideEB[c] ||'#ccc';
+
+  /* Moped ------------------------------------------------------*/
+  if(v==='License_Requirement(Moped)')     return C.licM[c] ||'#ccc';
+  if(v==='Registration_requirement(Moped)')return C.regM[c] ||'#ccc';
+  if(v==='Helmet_requirement(Moped)')      return C.helmM[c]||'#ccc';
+  if(v==='Age_Requirement(Moped)')         return C.ageM[c] ||'#ccc';
+  if(v==='Bikepath_restrictions(Moped)')   return C.pathM[c]||'#ccc';
+  if(v==='Insurance_requirment(Moped)')    return C.insM[c] ||'#ccc';
+
+  /* (Leave your existing resolver blocks for scooters & bikes here) */
+
+  return '#ccc'; // fallback
 }
 
 /* ---------- MAP ---------- */
@@ -141,10 +176,19 @@ let data={},layer,legend,curMode='E-bike',curVar=modeVars['E-bike'][0].value;
 /* ---------- DATA ---------- */
 fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vQrQxPEts8ty9L0LPKEw7kD80wc0ZygZrSM57kYHTkgAcvHR6-1qQ2Y3OV70-bcYv4ZuXVsdsWx88GB/pub?output=csv')
 .then(r=>r.text()).then(txt=>{
-  Papa.parse(txt,{header:true}).data.forEach(r=>{const s=r.State?.trim();if(s)data[s]=r;});
-  layer=L.geoJson(statesData,{style:f=>({fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),weight:1,color:'#fff',fillOpacity:.7})}).addTo(map);
-  layer.eachLayer(l=>l.bindTooltip(l.feature.properties.name,{permanent:true,direction:'center',className:'state-label'}));
-  populateDropdown(curMode); updateLegend();
+  Papa.parse(txt,{header:true}).data.forEach(r=>{
+    const s=r.State?.trim();
+    if(s) data[s]=r;
+  });
+  layer=L.geoJson(statesData,{
+    style:f=>({
+      fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),
+      weight:1,color:'#fff',fillOpacity:.7
+    })
+  }).addTo(map);
+  layer.eachLayer(bindPopup);
+  populateDropdown(curMode);
+  updateLegend();
 });
 
 /* ---------- POP-UPS ---------- */
@@ -155,7 +199,14 @@ function bindPopup(l){
   const pdf=data[st]?.PDF_URL||'';
   l.bindPopup(`<b>${st}</b><br><strong>${lbl}:</strong> ${val}${pdf?`<br><a href="${pdf}" target="_blank" style="font-weight:bold;color:#00539b;text-decoration:underline;">View State Regulation PDF</a>`:''}`);
 }
-function redraw(){layer.setStyle(f=>({fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),weight:1,color:'#fff',fillOpacity:.7})); layer.eachLayer(bindPopup); updateLegend();}
+function redraw(){
+  layer.setStyle(f=>({
+    fillColor:colourOf(data[f.properties.name]?.[curVar],curVar),
+    weight:1,color:'#fff',fillOpacity:.7
+  }));
+  layer.eachLayer(bindPopup);
+  updateLegend();
+}
 
 /* ---------- LEGEND ---------- */
 function updateLegend(){
@@ -167,29 +218,47 @@ function updateLegend(){
     const list=(orders[curVar]||Array.from(present).sort()).filter(c=>present.has(c));
     el.innerHTML=list.map(c=>`<i style="background:${colourOf(c,curVar)}"></i> ${c}`).join('<br>');
     return el;
-  }; legend.addTo(map);
+  };
+  legend.addTo(map);
 }
 
 /* ---------- DROPDOWNS ---------- */
 function populateDropdown(mode){
-  const sel=document.getElementById('variable-select'); sel.innerHTML='';
-  modeVars[mode].forEach(o=>{const opt=document.createElement('option');opt.value=o.value;opt.textContent=o.label;sel.appendChild(opt);});
-  curVar=modeVars[mode][0].value; redraw();
+  const sel=document.getElementById('variable-select');
+  sel.innerHTML='';
+  modeVars[mode].forEach(o=>{
+    const opt=document.createElement('option');
+    opt.value=o.value; opt.textContent=o.label;
+    sel.appendChild(opt);
+  });
+  curVar=modeVars[mode][0].value;
+  redraw();
 }
-document.getElementById('mode-select').onchange=e=>{curMode=e.target.value; populateDropdown(curMode);};
-document.getElementById('variable-select').onchange=e=>{curVar=e.target.value; redraw();};
+document.getElementById('mode-select').onchange=e=>{
+  curMode=e.target.value;
+  populateDropdown(curMode);
+};
+document.getElementById('variable-select').onchange=e=>{
+  curVar=e.target.value;
+  redraw();
+};
 
 /* ---------- CITIES ---------- */
-const cities=[{n:'Atlanta, GA',c:[33.749,-84.388]},{n:'Austin, TX',c:[30.267,-97.743]},{n:'Boston, MA',c:[42.36,-71.059]},
-{n:'Denver, CO',c:[39.739,-104.99]},{n:'Los Angeles, CA',c:[34.052,-118.244]},{n:'Madison, WI',c:[43.073,-89.401]},
-{n:'Minneapolis, MN',c:[44.978,-93.265]},{n:'New York, NY',c:[40.713,-74.006]},{n:'Philadelphia, PA',c:[39.953,-75.165]},
-{n:'Phoenix, AZ',c:[33.448,-112.074]},{n:'Portland, OR',c:[45.505,-122.675]},{n:'Richmond, VA',c:[37.541,-77.436]},
-{n:'Seattle, WA',c:[47.606,-122.332]},{n:'St. Louis, MO',c:[38.627,-90.199]},{n:'Tampa, FL',c:[27.951,-82.457]},
-{n:'Washington, D.C.',c:[38.907,-77.037]}];
+const cities=[
+  {n:'Atlanta, GA',c:[33.749,-84.388]},{n:'Austin, TX',c:[30.267,-97.743]},
+  {n:'Boston, MA',c:[42.36,-71.059]},{n:'Denver, CO',c:[39.739,-104.99]},
+  {n:'Los Angeles, CA',c:[34.052,-118.244]},{n:'Madison, WI',c:[43.073,-89.401]},
+  {n:'Minneapolis, MN',c:[44.978,-93.265]},{n:'New York, NY',c:[40.713,-74.006]},
+  {n:'Philadelphia, PA',c:[39.953,-75.165]},{n:'Phoenix, AZ',c:[33.448,-112.074]},
+  {n:'Portland, OR',c:[45.505,-122.675]},{n:'Richmond, VA',c:[37.541,-77.436]},
+  {n:'Seattle, WA',c:[47.606,-122.332]},{n:'St. Louis, MO',c:[38.627,-90.199]},
+  {n:'Tampa, FL',c:[27.951,-82.457]},{n:'Washington, D.C.',c:[38.907,-77.037]}
+];
 const markers=cities.map(o=>L.marker(o.c).addTo(map).bindPopup(`<strong>${o.n}</strong>`));
 let showCities=true;
 document.getElementById('toggle-city').onclick=function(){
-  showCities=!showCities; this.textContent=(showCities?'Hide':'Show')+' City Markers';
+  showCities=!showCities;
+  this.textContent=(showCities?'Hide':'Show')+' City Markers';
   markers.forEach(m=>showCities?m.addTo(map):map.removeLayer(m));
 };
 </script>
