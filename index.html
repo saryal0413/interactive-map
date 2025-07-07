@@ -565,14 +565,22 @@ document.getElementById('variable-select').onchange=e=>{
 
 /* ---------- CITIES ---------- */
 const cities=[
-  {n:'Atlanta, GA',c:[33.749,-84.388]},{n:'Austin, TX',c:[30.267,-97.743]},
-  {n:'Boston, MA',c:[42.36,-71.059]},{n:'Denver, CO',c:[39.739,-104.99]},
-  {n:'Los Angeles, CA',c:[34.052,-118.244]},{n:'Madison, WI',c:[43.073,-89.401]},
-  {n:'Minneapolis, MN',c:[44.978,-93.265]},{n:'New York, NY',c:[40.713,-74.006]},
-  {n:'Philadelphia, PA',c:[39.953,-75.165]},{n:'Phoenix, AZ',c:[33.448,-112.074]},
-  {n:'Portland, OR',c:[45.505,-122.675]},{n:'Richmond, VA',c:[37.541,-77.436]},
-  {n:'Seattle, WA',c:[47.606,-122.332]},{n:'St. Louis, MO',c:[38.627,-90.199]},
-  {n:'Tampa, FL',c:[27.951,-82.457]},{n:'Washington, D.C.',c:[38.907,-77.037]}
+  {n:'Atlanta, GA',c:[33.749,-84.388], pdf:'https://drive.google.com/file/d/1xM6OspaDjTziKihI0BM9fmGIaGrQ7xFs/view?usp=sharing'},
+  {n:'Austin, TX',c:[30.267,-97.743]},
+  {n:'Boston, MA',c:[42.36,-71.059]},
+  {n:'Denver, CO',c:[39.739,-104.99]},
+  {n:'Los Angeles, CA',c:[34.052,-118.244]},
+  {n:'Madison, WI',c:[43.073,-89.401]},
+  {n:'Minneapolis, MN',c:[44.978,-93.265]},
+  {n:'New York, NY',c:[40.713,-74.006]},
+  {n:'Philadelphia, PA',c:[39.953,-75.165]},
+  {n:'Phoenix, AZ',c:[33.448,-112.074]},
+  {n:'Portland, OR',c:[45.505,-122.675]},
+  {n:'Richmond, VA',c:[37.541,-77.436]},
+  {n:'Seattle, WA',c:[47.606,-122.332]},
+  {n:'St. Louis, MO',c:[38.627,-90.199]},
+  {n:'Tampa, FL',c:[27.951,-82.457]},
+  {n:'Washington, D.C.',c:[38.907,-77.037]}
 ];
 const markers=cities.map(o=>L.marker(o.c).addTo(map).bindPopup(`<strong>${o.n}</strong>`));
 let showCities=true;
