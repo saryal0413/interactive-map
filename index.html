@@ -198,8 +198,12 @@ const orders={
     'None'
   ],
   
-  'Bikepath_restrictions(Moped)':['Not restricted','Restricted'],
-  'Insurance_requirment(Moped)':['Not required','Required']
+  'Bikepath_restrictions(Moped)':['Allowed on bike path','Restricted'],
+  'Insurance_requirment(Moped)':[
+    'Not required',
+    'Required',
+    'Conditional requirement'   // ← Add this
+],
 };
 
 /* ---------- COLOUR RESOLVER ---------- */
@@ -365,8 +369,12 @@ C.ageM={
   'none':'#8c8c8c'
 };
 
-C.pathM={'not restricted':'#1a9641','restricted':'#d73027'};
-C.insM={'not required':'#1a9641','required':'#d73027'};
+C.pathM={'Allowed on bike path':'#1a9641','restricted':'#d73027'};
+C.insM={
+  'not required': '#1a9641',             // green
+  'required': '#d73027',                 // red
+  'conditional requirement': '#fdae61'   // orange
+};
 
 /* ---------- COLOUR RESOLVER ---------- */
 function colourOf(raw, v) {
