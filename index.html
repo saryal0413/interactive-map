@@ -173,7 +173,13 @@ const orders={
     'Unclear / Other'
   ],
   
-  'Registration_requirement(Moped)':['Needs registration','Not required'],
+  'Registration_requirement(Moped)':[
+    'Needs registration',
+    'Not required',
+    'Only for offroad riding',
+    'Unclear'
+  ],
+  
   'Helmet_requirement(Moped)':['No helmet required','Under 18','Under 21','Universal helmet law','Conditional/exempt'],
   'Age_Requirement(Moped)':['16','15 – 15.5 with permit/course','None'],
   'Bikepath_restrictions(Moped)':['Not restricted','Restricted'],
@@ -316,7 +322,13 @@ C.licM={
 };
 
   
-C.regM={'needs registration':'#1f78b4','not required':'#a6cee3'};
+C.regM={
+  'needs registration'     : '#1a9641',  // dark green
+  'not required'           : '#d73027',  // red
+  'only for offroad riding': '#fdae61',  // orange
+  'unclear'                : '#8c8c8c'   // grey
+};
+  
 C.helmM={
   'no helmet required':'#1a9641','under 18':'#a6d96a','under 21':'#fdae61',
   'universal helmet law':'#d73027','conditional/exempt':'#8c8c8c'
