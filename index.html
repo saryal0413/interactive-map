@@ -79,6 +79,11 @@ const modeVars={
     {value:'Age_Requirement(Moped)',label:'Minimum Riding Age'},
     {value:'Bikepath_restrictions(Moped)',label:'Bike-path Restrictions'},
     {value:'Insurance_requirment(Moped)',label:'Insurance Requirement'}
+  ],
+  'Boards':[
+    { value: 'Board_Helmet_Requirement', label: 'Helmet Requirement' },
+    { value: 'Board_Sidewalk_Restrictions', label: 'Sidewalk Riding' },
+    { value: 'Board_roads_access', label: 'Road Access' }
   ]
 };
 
@@ -203,6 +208,21 @@ const orders={
     'Not required',
     'Required',
     'Conditional requirement'   // ← Add this
+],
+/*-------------------------Boards-----------------*/
+  'Board_Sidewalk_Restrictions': [
+  'Can ride on sidewalks',
+  'Restricted',
+  'No state law',
+  'Mode not defined'
+],
+
+'Board_roads_access': [
+  'Can ride on roads',
+  'Conditional riding on roads',
+  'Cannot ride on roads',
+  'Restricted',
+  'No state law'
 ],
 };
 
@@ -376,6 +396,24 @@ C.insM={
   'conditional requirement': '#fdae61'   // orange
 };
 
+
+/* ---- Boards palettes ---- */
+C.sideBrd = {
+  'can ride on sidewalks' : '#1a9641',   // green
+  'restricted'            : '#d73027',   // red
+  'no state law'          : '#8c8c8c',   // gray
+  'mode not defined'      : '#cccccc'    // light gray
+};
+
+C.roadBrd = {
+  'can ride on roads'             : '#1a9641',
+  'conditional riding on roads'  : '#fee08b',
+  'cannot ride on roads'         : '#f46d43',
+  'restricted'                   : '#d73027',
+  'no state law'                 : '#8c8c8c'
+};
+
+
 /* ---------- COLOUR RESOLVER ---------- */
 function colourOf(raw, v) {
   if (!raw || raw === 'NA') return '#ccc';
@@ -406,7 +444,11 @@ function colourOf(raw, v) {
   if(v==='Bikepath_restrictions(Moped)')   return C.pathM[c]||'#ccc';
   if(v==='Insurance_requirment(Moped)')    return C.insM[c] ||'#ccc';
 
-  /* (Leave your existing resolver blocks for scooters & bikes here) */
+  /* Boards -------------------------------------------------------- */
+  if (v === 'Board_Helmet_Requirement')      return C.helmBrd[c]   || '#ccc';
+  if (v === 'Board_Sidewalk_Restrictions')   return C.sideBrd[c]   || '#ccc';
+  if (v === 'Board_roads_access')            return C.roadBrd[c]   || '#ccc';
+
 
   return '#ccc'; // fallback
 }
